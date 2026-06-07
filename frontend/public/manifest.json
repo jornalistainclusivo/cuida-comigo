@@ -1,0 +1,26 @@
+{
+  "name": "Orquestração do Cuidado",
+  "short_name": "Cuidado",
+  "description": "Plataforma de gestão compartilhada para descentralizar a carga cognitiva de cuidadores informais.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0D4F4F",
+  "background_color": "#FFFFFF",
+  "lang": "pt-BR",
+  "categories": ["health", "medical", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
