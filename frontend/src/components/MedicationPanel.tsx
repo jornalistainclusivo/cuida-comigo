@@ -6,12 +6,13 @@ import styles from "./MedicationPanel.module.css";
 
 interface MedicationPanelProps {
   protocols: MedicationProtocol[];
-  onLogMedication: (protocolId: string) => Promise<void>;
+  onLogMedication: (protocolId: string) => Promise<{ success: boolean; stock_alert?: boolean; remaining_balance?: number; error?: string } | void>;
 }
 
 export function MedicationPanel({ protocols, onLogMedication }: MedicationPanelProps) {
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleOpenConfirm = (protocolId: string) => {
     setSelectedProtocolId(protocolId);
@@ -24,8 +25,13 @@ export function MedicationPanel({ protocols, onLogMedication }: MedicationPanelP
   const handleConfirmDose = async (protocolId: string) => {
     setIsSubmitting(true);
     try {
-      await onLogMedication(protocolId);
+      const result = await onLogMedication(protocolId);
       setSelectedProtocolId(null);
+
+      if (result && result.success && result.stock_alert) {
+        setToastMessage(`Atenção: O estoque crítico foi atingido (${result.remaining_balance} restantes). Uma tarefa de reposição foi gerada.`);
+        setTimeout(() => setToastMessage(null), 8000);
+      }
     } catch (error) {
       console.error("Falha ao registrar dose", error);
     } finally {
@@ -37,6 +43,13 @@ export function MedicationPanel({ protocols, onLogMedication }: MedicationPanelP
     <section className={styles.panel}>
       <h2>Meus Medicamentos</h2>
       
+      {toastMessage && (
+        <div className={styles.toast} role="alert" aria-live="assertive">
+          {toastMessage}
+          <button className={styles.toastClose} onClick={() => setToastMessage(null)} aria-label="Fechar alerta">&times;</button>
+        </div>
+      )}
+
       {protocols.length === 0 ? (
         <p className={styles.emptyState}>Nenhum medicamento cadastrado.</p>
       ) : (

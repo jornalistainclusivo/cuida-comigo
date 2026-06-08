@@ -99,15 +99,16 @@ const userNamesMap: Record<string, string> = {
 
 async function fetchTasks(): Promise<Task[]> {
   try {
-    const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000";
-    const res = await fetch(`${API_BASE_URL}/tasks?care_group_id=${DEMO_GROUP.id}`, { cache: "no-store" });
+    const API_BASE_URL = process.env.API_BASE_URL || "http://127.0.0.1:8000";
+    const res = await fetch(`${API_BASE_URL}/api/v1/care-groups/${DEMO_GROUP.id}/tasks`, { cache: "no-store" });
     if (res.ok) {
       return (await res.json()) as Task[];
     }
+    console.error("Erro na resposta do FastAPI ao buscar tarefas:", res.status);
   } catch (error) {
-    console.warn("FastAPI indisponível ou rota não encontrada. Usando DEMO_TASKS fallback:", error);
+    console.error("FastAPI indisponível. Erro ao buscar tarefas reais:", error);
   }
-  return DEMO_TASKS;
+  return []; // Removed DEMO_TASKS fallback to force real integration
 }
 
 export default async function DashboardPage() {

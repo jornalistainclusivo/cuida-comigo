@@ -202,3 +202,25 @@
     transform: translateY(0);
   }
 }
+
+.toast {
+  background-color: var(--color-danger);
+  color: var(--color-surface);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-md);
+  animation: slideDown var(--transition-fast) forwards;
+}
+
+.toastClose {
+  background: transparent;
+  border: none;
+  color: var(--color-surface);
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+}

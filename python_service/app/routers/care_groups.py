@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
+from typing import List
 from app.database import get_session
+from sqlmodel import select
 from app.models import CareGroup, CareRecipient, Task
 from app.schemas import CareGroupCreate, CareGroupResponse, TaskCreate, TaskResponse
 
@@ -39,3 +41,15 @@ async def create_task(group_id: uuid.UUID, payload: TaskCreate, session: AsyncSe
     await session.refresh(task)
     
     return task
+
+@router.get("/{group_id}/tasks", response_model=List[TaskResponse])
+async def get_tasks(group_id: uuid.UUID, session: AsyncSession = Depends(get_session)):
+    group = await session.get(CareGroup, group_id)
+    if not group:
+         raise HTTPException(status_code=404, detail="Care group not found")
+         
+    query = select(Task).where(Task.care_group_id == group_id).order_by(Task.due_date)
+    result = await session.execute(query)
+    tasks = result.scalars().all()
+    
+    return tasks

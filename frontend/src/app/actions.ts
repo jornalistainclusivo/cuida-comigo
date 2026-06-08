@@ -2,14 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.API_BASE_URL || "http://127.0.0.1:8000";
 
 /**
  * Assumir tarefa: Chama PATCH /tasks/{taskId}/claim no FastAPI
  */
 export async function claimTaskAction(taskId: string, assigneeId: string) {
   try {
-    const res = await fetch(`${API_BASE_URL}/tasks/${taskId}/claim`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}/claim`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export async function claimTaskAction(taskId: string, assigneeId: string) {
  */
 export async function completeTaskAction(taskId: string) {
   try {
-    const res = await fetch(`${API_BASE_URL}/tasks/${taskId}/complete`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}/complete`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +56,6 @@ export async function completeTaskAction(taskId: string) {
  */
 export async function logMedicationAction(protocolId: string) {
   try {
-    const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000";
     const ADMIN_USER_ID = "d4e5f6a7-b8c9-0123-defa-234567890123"; // Mock admin user
 
     const payload = {
@@ -72,12 +71,23 @@ export async function logMedicationAction(protocolId: string) {
     });
 
     if (!res.ok) {
-      console.warn("FastAPI indisponível. Simulando registro da dose no frontend.");
+      console.warn("FastAPI indisponível ou erro na requisição.");
+      return { success: false, error: "Failed to log medication" };
     }
 
-    // Revalidate the medications page to show updated stock count
+    const data = await res.json();
+
+    // Revalidate the medications page and dashboard to show updated stock count and potential new tasks
     revalidatePath("/medicamentos");
+    revalidatePath("/");
+
+    return {
+      success: true,
+      stock_alert: data.stock_alert,
+      remaining_balance: data.remaining_balance,
+    };
   } catch (error) {
     console.error(`Erro ao registrar dose para protocolo ${protocolId}:`, error);
+    return { success: false, error: "Network error" };
   }
 }

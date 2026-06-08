@@ -25,7 +25,7 @@ class TaskResponse(BaseModel):
     due_date: datetime
 
 class TaskClaimRequest(BaseModel):
-    assignee_member_id: uuid.UUID
+    assignee_id: uuid.UUID
 
 class TaskClaimResponse(BaseModel):
     id: uuid.UUID
@@ -39,7 +39,27 @@ class ProtocolCreate(BaseModel):
     stock_count: int
     safety_threshold: int
 
+class MedicationProtocolResponse(BaseModel):
+    id: uuid.UUID
+    care_recipient_id: uuid.UUID
+    medication_name: str
+    dosage: str
+    frequency_interval_hours: int
+    stock_count: int
+    safety_threshold: int
+    created_at: datetime
+    updated_at: datetime
+
 class MedicationLogCreate(BaseModel):
     administered_by: uuid.UUID
     administered_at: datetime
     notes: Optional[str] = None
+
+class MedicationLogResponse(BaseModel):
+    id: uuid.UUID
+    protocol_id: uuid.UUID
+    administered_by: uuid.UUID
+    administered_at: datetime
+    notes: Optional[str] = None
+    stock_alert: bool = False
+    remaining_balance: int
