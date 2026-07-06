@@ -14,8 +14,10 @@
 import { useState, useCallback } from "react";
 import type { Task, TaskStatus } from "@/types";
 import styles from "./TaskPanel.module.css";
+import { CreateTaskForm } from "./CreateTaskForm";
 
 interface TaskPanelProps {
+  groupId: string;
   tasks: Task[];
   currentMemberId: string | null;
   onClaimTask?: (taskId: string, memberId: string) => Promise<void>;
@@ -39,6 +41,7 @@ const STATUS_CSS: Record<TaskStatus, string> = {
 };
 
 export function TaskPanel({
+  groupId,
   tasks,
   currentMemberId,
   onClaimTask,
@@ -46,6 +49,7 @@ export function TaskPanel({
 }: TaskPanelProps) {
   const [announcement, setAnnouncement] = useState("");
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
   const headingId = "task-panel-heading";
 
@@ -95,17 +99,37 @@ export function TaskPanel({
 
   return (
     <section aria-labelledby={headingId} className={styles.panel}>
-      <h2 id={headingId}>
-        Tarefas
-        <span className="visually-hidden">
-          ({tasks.length} {tasks.length === 1 ? "tarefa" : "tarefas"})
-        </span>
-      </h2>
+      <div className={styles.headerRow}>
+        <h2 id={headingId}>
+          Tarefas
+          <span className="visually-hidden">
+            ({tasks.length} {tasks.length === 1 ? "tarefa" : "tarefas"})
+          </span>
+        </h2>
+        {!isCreating && (
+          <button
+            type="button"
+            className="btn btn--primary"
+            onClick={() => setIsCreating(true)}
+          >
+            Nova Tarefa
+          </button>
+        )}
+      </div>
 
       {/* Live region for screen reader announcements */}
       <output aria-live="polite" aria-atomic="true" className="live-region">
         {announcement}
       </output>
+
+      {isCreating && (
+        <div style={{ marginBottom: "var(--space-6)" }}>
+          <CreateTaskForm
+            groupId={groupId}
+            onClose={() => setIsCreating(false)}
+          />
+        </div>
+      )}
 
       {sortedTasks.length > 0 ? (
         <ol className={styles.taskList} aria-label="Lista de tarefas ordenada por prazo">
@@ -184,9 +208,22 @@ export function TaskPanel({
           })}
         </ol>
       ) : (
-        <p className={styles.empty} role="status">
-          Nenhuma tarefa cadastrada neste grupo.
-        </p>
+        !isCreating && (
+          <div className={styles.emptyCard} role="status">
+            <span className={styles.emptyIcon} aria-hidden="true">📋</span>
+            <h3 className={styles.emptyTitle}>Nenhuma Tarefa Pendente</h3>
+            <p className={styles.emptyText}>
+              Crie tarefas de cuidado como medição de sinais vitais, alimentação ou repouso para organizar a rotina de acolhimento.
+            </p>
+            <button
+              type="button"
+              className="btn btn--accent"
+              onClick={() => setIsCreating(true)}
+            >
+              Criar Primeira Tarefa
+            </button>
+          </div>
+        )
       )}
     </section>
   );

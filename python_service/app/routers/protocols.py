@@ -1,20 +1,44 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, status
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
 from typing import List
 from sqlmodel import select
 from app.database import get_session
-from app.models import MedicationProtocol, MedicationLog, CareRecipient, Task, TaskStatus, utc_now
+from app.models import MedicationProtocol, MedicationLog, CareRecipient, Task, TaskStatus, utc_now, User, CareGroupMember
 from app.schemas import ProtocolCreate, MedicationLogCreate, MedicationProtocolResponse, MedicationLogResponse
+from app.auth.dependencies import get_current_user
 
 router = APIRouter(tags=["Protocols"])
 
-@router.post("/api/v1/care-recipients/{recipient_id}/protocols")
-async def create_protocol(recipient_id: uuid.UUID, payload: ProtocolCreate, session: AsyncSession = Depends(get_session)):
+@router.post(
+    "/api/v1/care-recipients/{recipient_id}/protocols",
+    response_model=MedicationProtocolResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new medication protocol for a care recipient"
+)
+async def create_protocol(
+    recipient_id: uuid.UUID,
+    payload: ProtocolCreate,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
     recipient = await session.get(CareRecipient, recipient_id)
     if not recipient:
         raise HTTPException(status_code=404, detail="Care recipient not found")
+        
+    # Validate that user is a member of the CareGroup managing this recipient (BR-PRT-01)
+    member_stmt = select(CareGroupMember).where(
+        CareGroupMember.care_group_id == recipient.care_group_id,
+        CareGroupMember.user_id == current_user.id
+    )
+    member_result = await session.execute(member_stmt)
+    member = member_result.scalar_one_or_none()
+    if not member:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User is not a member of the CareGroup managing this recipient"
+        )
         
     protocol = MedicationProtocol(
         care_recipient_id=recipient_id,

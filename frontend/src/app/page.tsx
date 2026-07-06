@@ -146,6 +146,7 @@ export default async function DashboardPage() {
       />
 
       <TaskPanel
+        groupId={activeGroup.id}
         tasks={tasks}
         currentMemberId={groupMembers[0].id}
         onClaimTask={claimTaskAction}

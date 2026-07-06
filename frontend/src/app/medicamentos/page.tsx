@@ -86,17 +86,12 @@ export default async function MedicamentosPage() {
         </p>
       </header>
       
-      {protocols.length === 0 ? (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyIcon} aria-hidden="true">💊</div>
-          <h2 className={styles.emptyTitle}>Farmácia Vazia</h2>
-          <p className={styles.emptyText}>
-            Não há nenhum medicamento cadastrado para o paciente <strong>{activeRecipient.name}</strong>.
-          </p>
-        </div>
-      ) : (
-        <MedicationPanel protocols={protocols} onLogMedication={logMedicationAction} />
-      )}
+      <MedicationPanel
+        recipientId={activeRecipient.id}
+        recipientName={activeRecipient.name}
+        protocols={protocols}
+        onLogMedication={logMedicationAction}
+      />
     </article>
   );
 }

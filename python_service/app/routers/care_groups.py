@@ -71,11 +71,34 @@ async def create_care_group(
     
     return group
 
-@router.post("/{group_id}/tasks", response_model=TaskResponse)
-async def create_task(group_id: uuid.UUID, payload: TaskCreate, session: AsyncSession = Depends(get_session)):
+@router.post(
+    "/{group_id}/tasks",
+    response_model=TaskResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new task for a care group"
+)
+async def create_task(
+    group_id: uuid.UUID,
+    payload: TaskCreate,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
     group = await session.get(CareGroup, group_id)
     if not group:
          raise HTTPException(status_code=404, detail="Care group not found")
+         
+    # Validate that user is a member of the care group (BR-TSK-01)
+    member_stmt = select(CareGroupMember).where(
+        CareGroupMember.care_group_id == group_id,
+        CareGroupMember.user_id == current_user.id
+    )
+    member_result = await session.execute(member_stmt)
+    member = member_result.scalar_one_or_none()
+    if not member:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User is not a member of this CareGroup"
+        )
          
     task = Task(
         care_group_id=group_id,

@@ -78,9 +78,17 @@ class TaskCreate(BaseModel):
     recurrence_rule: Optional[str] = None
 
 class TaskResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
-    status: TaskStatus
+    care_group_id: uuid.UUID
+    title: str
+    description: Optional[str] = None
+    assignee_id: Optional[uuid.UUID] = None
     due_date: datetime
+    status: TaskStatus
+    recurrence_rule: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
 
 class TaskClaimRequest(BaseModel):
     assignee_id: uuid.UUID

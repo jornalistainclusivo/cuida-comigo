@@ -112,6 +112,18 @@ class CareRecipientResponse(BaseModel):
 - **Business Rule (BR-CR-01):** O usuário que submete a requisição deve obrigatoriamente ser um membro do grupo `care_group_id` especificado, possuindo a role `ADMIN`. Caso contrário, retorna `403 Forbidden`.
 - **Business Rule (BR-CR-02) (Regra MVP):** Apenas 1 paciente pode ser associado a cada `CareGroup`. Se o grupo já possuir um receptor de cuidados ativo, retorna `409 Conflict`.
 
+**`POST /api/v1/care-groups/{group_id}/tasks`**
+- **Auth:** Requer JWT Bearer Token (`get_current_user`).
+- **Request Body:** `TaskCreate`
+- **Response:** `201 Created` → `TaskResponse`
+- **Business Rule (BR-TSK-01):** O criador da tarefa deve ser membro do grupo `group_id`. Caso contrário, retorna `403 Forbidden`.
+
+**`POST /api/v1/care-recipients/{recipient_id}/protocols`**
+- **Auth:** Requer JWT Bearer Token (`get_current_user`).
+- **Request Body:** `ProtocolCreate`
+- **Response:** `201 Created` → `MedicationProtocolResponse`
+- **Business Rule (BR-PRT-01):** O criador do protocolo de medicamento deve ser membro do grupo de cuidado que gerencia o receptor de cuidados `recipient_id`. Caso contrário, retorna `403 Forbidden`.
+
 ---
 
 ## 4. Regras de Negócio e Invariantes
@@ -127,3 +139,11 @@ class CareRecipientResponse(BaseModel):
 - **Entrada:** `CareRecipientCreate`
 - **Invariant:** Somente o `ADMIN` de um círculo de cuidado pode adicionar o paciente àquele círculo.
 - **Ação:** Busca na tabela `care_group_members` a entrada correspondente a `user_id` e `care_group_id`. Se a entrada não existir ou a `role` não for `ADMIN`, viola o acesso lançando erro `E_AUTH_FORBIDDEN` (HTTP 403).
+
+### BR-TSK-01: Autorização de Criação de Tarefas
+- **Precondição:** Usuário JWT válido e ativo.
+- **Ação:** Valida a associação na tabela `care_group_members` para o `user_id` e `group_id`. Se o usuário não for membro do grupo, retorna `403 Forbidden`.
+
+### BR-PRT-01: Autorização de Criação de Protocolos
+- **Precondição:** Usuário JWT válido e ativo.
+- **Ação:** Busca o `care_group_id` a partir do `recipient_id` informado. Valida a associação na tabela `care_group_members` para o `user_id` e `care_group_id`. Se o usuário não for membro do grupo, retorna `403 Forbidden`.

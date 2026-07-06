@@ -3,16 +3,20 @@
 import { useState } from "react";
 import type { MedicationProtocol } from "@/types";
 import styles from "./MedicationPanel.module.css";
+import { CreateProtocolForm } from "./CreateProtocolForm";
 
 interface MedicationPanelProps {
+  recipientId: string;
+  recipientName: string;
   protocols: MedicationProtocol[];
   onLogMedication: (protocolId: string) => Promise<{ success: boolean; stock_alert?: boolean; remaining_balance?: number; error?: string } | void>;
 }
 
-export function MedicationPanel({ protocols, onLogMedication }: MedicationPanelProps) {
+export function MedicationPanel({ recipientId, recipientName, protocols, onLogMedication }: MedicationPanelProps) {
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
   const handleOpenConfirm = (protocolId: string) => {
     setSelectedProtocolId(protocolId);
@@ -41,7 +45,17 @@ export function MedicationPanel({ protocols, onLogMedication }: MedicationPanelP
 
   return (
     <section className={styles.panel}>
-      <h2>Meus Medicamentos</h2>
+      <div className={styles.headerRow}>
+        <h2>Meus Medicamentos</h2>
+        {!isCreating && (
+          <button
+            className="btn btn--primary"
+            onClick={() => setIsCreating(true)}
+          >
+            Novo Medicamento
+          </button>
+        )}
+      </div>
       
       {toastMessage && (
         <div className={styles.toast} role="alert" aria-live="assertive">
@@ -50,8 +64,32 @@ export function MedicationPanel({ protocols, onLogMedication }: MedicationPanelP
         </div>
       )}
 
+      {isCreating && (
+        <div style={{ marginBottom: "var(--space-6)" }}>
+          <CreateProtocolForm
+            recipientId={recipientId}
+            onClose={() => setIsCreating(false)}
+          />
+        </div>
+      )}
+
       {protocols.length === 0 ? (
-        <p className={styles.emptyState}>Nenhum medicamento cadastrado.</p>
+        !isCreating && (
+          <div className={styles.emptyCard} role="status">
+            <span className={styles.emptyIcon} aria-hidden="true">💊</span>
+            <h3 className={styles.emptyTitle}>Farmácia Vazia</h3>
+            <p className={styles.emptyText}>
+              Não há nenhum medicamento cadastrado para o paciente <strong>{recipientName}</strong>.
+            </p>
+            <button
+              type="button"
+              className="btn btn--accent"
+              onClick={() => setIsCreating(true)}
+            >
+              Cadastrar Primeiro Medicamento
+            </button>
+          </div>
+        )
       ) : (
         <div className={styles.list}>
           {protocols.map((protocol) => {

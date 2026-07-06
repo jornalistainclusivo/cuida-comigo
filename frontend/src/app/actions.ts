@@ -115,3 +115,113 @@ export async function logMedicationAction(protocolId: string) {
     return { success: false, error: "Network error" };
   }
 }
+
+export interface FormState {
+  success: boolean;
+  error?: string;
+  message?: string;
+}
+
+/**
+ * Server Action: Criar Tarefa
+ */
+export async function createTaskAction(
+  groupId: string,
+  prevState: FormState | null,
+  formData: FormData
+): Promise<FormState> {
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const dueDateStr = formData.get("due_date") as string;
+
+  if (!title || !dueDateStr) {
+    return { success: false, error: "Título e data de vencimento são obrigatórios." };
+  }
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+
+  if (!token) {
+    return { success: false, error: "Sessão expirada. Faça login novamente." };
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/care-groups/${groupId}/tasks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title,
+        description: description || null,
+        due_date: new Date(dueDateStr).toISOString(),
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      return { success: false, error: data.detail || "Falha ao criar tarefa." };
+    }
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("createTaskAction error:", error);
+    return { success: false, error: "Erro de conexão com o servidor." };
+  }
+}
+
+/**
+ * Server Action: Criar Protocolo de Medicamento
+ */
+export async function createProtocolAction(
+  recipientId: string,
+  prevState: FormState | null,
+  formData: FormData
+): Promise<FormState> {
+  const medicationName = formData.get("medication_name") as string;
+  const dosage = formData.get("dosage") as string;
+  const frequencyRaw = formData.get("frequency_interval_hours") as string;
+  const stockRaw = formData.get("stock_count") as string;
+  const safetyRaw = formData.get("safety_threshold") as string;
+
+  if (!medicationName || !dosage || !frequencyRaw || !stockRaw || !safetyRaw) {
+    return { success: false, error: "Todos os campos são obrigatórios." };
+  }
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+
+  if (!token) {
+    return { success: false, error: "Sessão expirada. Faça login novamente." };
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/care-recipients/${recipientId}/protocols`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        medication_name: medicationName,
+        dosage,
+        frequency_interval_hours: parseInt(frequencyRaw, 10),
+        stock_count: parseInt(stockRaw, 10),
+        safety_threshold: parseInt(safetyRaw, 10),
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      return { success: false, error: data.detail || "Falha ao cadastrar medicamento." };
+    }
+
+    revalidatePath("/medicamentos");
+    return { success: true };
+  } catch (error) {
+    console.error("createProtocolAction error:", error);
+    return { success: false, error: "Erro de conexão com o servidor." };
+  }
+}
