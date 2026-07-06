@@ -53,45 +53,6 @@ const DEMO_MEMBERS: CareGroupMember[] = [
   },
 ];
 
-const DEMO_TASKS: Task[] = [
-  {
-    id: "t1a2b3c4-d5e6-7890-abcd-ef1234567890",
-    care_group_id: DEMO_GROUP.id,
-    title: "Comprar fraldas geriátricas",
-    description: "Tamanho G, pacote com 30 unidades.",
-    assignee_id: null,
-    due_date: "2026-06-08T18:00:00Z" as ISODateString,
-    status: "PENDING",
-    recurrence_rule: null,
-    created_at: "2026-06-06T10:00:00Z" as ISODateString,
-    updated_at: "2026-06-06T10:00:00Z" as ISODateString,
-  },
-  {
-    id: "t2b3c4d5-e6f7-8901-bcde-f12345678901",
-    care_group_id: DEMO_GROUP.id,
-    title: "Administrar banho assistido",
-    description: null,
-    assignee_id: "c3d4e5f6-a7b8-9012-cdef-123456789012",
-    due_date: "2026-06-07T09:00:00Z" as ISODateString,
-    status: "CLAIMED",
-    recurrence_rule: null,
-    created_at: "2026-06-06T08:00:00Z" as ISODateString,
-    updated_at: "2026-06-06T12:00:00Z" as ISODateString,
-  },
-  {
-    id: "t3c4d5e6-f7a8-9012-cdef-012345678902",
-    care_group_id: DEMO_GROUP.id,
-    title: "Fisioterapia domiciliar",
-    description: "Sessão semanal com Dr. Santos — 14h.",
-    assignee_id: "e5f6a7b8-c9d0-1234-efab-345678901234",
-    due_date: "2026-06-10T14:00:00Z" as ISODateString,
-    status: "COMPLETED",
-    recurrence_rule: null,
-    created_at: "2026-06-05T10:00:00Z" as ISODateString,
-    updated_at: "2026-06-06T16:00:00Z" as ISODateString,
-  },
-];
-
 const userNamesMap: Record<string, string> = {
   "d4e5f6a7-b8c9-0123-defa-234567890123": "João Silva", // Admin
   "f6a7b8c9-d0e1-2345-fabc-456789012345": "Carlos Souza", // Apoio
@@ -99,7 +60,7 @@ const userNamesMap: Record<string, string> = {
 
 async function fetchTasks(): Promise<Task[]> {
   try {
-    const API_BASE_URL = process.env.API_BASE_URL || "http://127.0.0.1:8000";
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || "http://127.0.0.1:8000";
     const res = await fetch(`${API_BASE_URL}/api/v1/care-groups/${DEMO_GROUP.id}/tasks`, { cache: "no-store" });
     if (res.ok) {
       return (await res.json()) as Task[];

@@ -1,6 +1,5 @@
+import { cookies } from "next/headers";
 import type { Metadata, Viewport } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import { SkipLink } from "@/components/SkipLink";
 import { Navigation } from "@/components/Navigation";
 import "./globals.css";
@@ -24,11 +23,14 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const isLoggedIn = cookieStore.has("cc_access_token");
+
   return (
     <html lang="pt-BR">
       <head>
@@ -51,7 +53,7 @@ export default function RootLayout({
       <body>
         <SkipLink />
 
-        <Navigation />
+        <Navigation isLoggedIn={isLoggedIn} />
 
         <main id="main-content" tabIndex={-1}>
           {children}
