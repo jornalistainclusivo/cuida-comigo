@@ -6,7 +6,7 @@ from typing import List
 from sqlmodel import select
 from app.database import get_session
 from app.models import MedicationProtocol, MedicationLog, CareRecipient, Task, TaskStatus, utc_now, User, CareGroupMember
-from app.schemas import ProtocolCreate, MedicationLogCreate, MedicationProtocolResponse, MedicationLogResponse
+from app.schemas import ProtocolCreate, MedicationLogCreate, MedicationProtocolResponse, MedicationLogResponse, ProtocolUpdate
 from app.auth.dependencies import get_current_user
 
 router = APIRouter(tags=["Protocols"])
@@ -118,3 +118,74 @@ async def log_medication(protocol_id: uuid.UUID, payload: MedicationLogCreate, b
         stock_alert=stock_alert,
         remaining_balance=protocol.stock_count
     )
+
+@router.patch("/api/v1/protocols/{protocol_id}", response_model=MedicationProtocolResponse)
+async def update_protocol(
+    protocol_id: uuid.UUID,
+    payload: ProtocolUpdate,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    protocol = await session.get(MedicationProtocol, protocol_id)
+    if not protocol:
+        raise HTTPException(status_code=404, detail="Protocol not found")
+
+    # Fetch recipient to get group_id
+    recipient = await session.get(CareRecipient, protocol.care_recipient_id)
+    if not recipient:
+        raise HTTPException(status_code=404, detail="Care recipient not found")
+
+    # Verify membership
+    member_stmt = select(CareGroupMember).where(
+        CareGroupMember.care_group_id == recipient.care_group_id,
+        CareGroupMember.user_id == current_user.id
+    )
+    member_result = await session.execute(member_stmt)
+    member = member_result.scalar_one_or_none()
+    if not member:
+        raise HTTPException(status_code=403, detail="Not a member of the CareGroup managing this protocol")
+
+    update_data = payload.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(protocol, key, value)
+        
+    protocol.updated_at = utc_now()
+    session.add(protocol)
+    await session.commit()
+    await session.refresh(protocol)
+    return protocol
+
+@router.delete("/api/v1/protocols/{protocol_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_protocol(
+    protocol_id: uuid.UUID,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    protocol = await session.get(MedicationProtocol, protocol_id)
+    if not protocol:
+        raise HTTPException(status_code=404, detail="Protocol not found")
+
+    # Fetch recipient to get group_id
+    recipient = await session.get(CareRecipient, protocol.care_recipient_id)
+    if not recipient:
+        raise HTTPException(status_code=404, detail="Care recipient not found")
+
+    # Verify membership
+    member_stmt = select(CareGroupMember).where(
+        CareGroupMember.care_group_id == recipient.care_group_id,
+        CareGroupMember.user_id == current_user.id
+    )
+    member_result = await session.execute(member_stmt)
+    member = member_result.scalar_one_or_none()
+    if not member:
+        raise HTTPException(status_code=403, detail="Not a member of the CareGroup managing this protocol")
+
+    # Explicit Cascading Deletions: Logs
+    log_stmt = select(MedicationLog).where(MedicationLog.protocol_id == protocol_id)
+    log_res = await session.execute(log_stmt)
+    logs = log_res.scalars().all()
+    for log in logs:
+        await session.delete(log)
+
+    await session.delete(protocol)
+    await session.commit()

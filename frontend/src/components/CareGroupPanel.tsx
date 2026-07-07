@@ -1,13 +1,10 @@
-/**
- * CareGroupPanel — Server Component
- *
- * Displays the CareGroup overview with its CareRecipient and members.
- * Uses semantic HTML exclusively — zero generic <div> elements.
- * WCAG: section aria-labelledby, proper heading hierarchy, list roles.
- */
+"use client";
 
+import { useState } from "react";
 import type { CareGroup, CareGroupMember, CareRecipient } from "@/types";
 import styles from "./CareGroupPanel.module.css";
+import { updateCareGroupAction, deleteCareGroupAction, updateCareRecipientAction, deleteCareRecipientAction } from "../app/actions";
+import { EditFormModal } from "./EditFormModal";
 
 interface CareGroupPanelProps {
   group: CareGroup;
@@ -22,6 +19,14 @@ export function CareGroupPanel({
   members,
   userNames,
 }: CareGroupPanelProps) {
+  const [editingGroup, setEditingGroup] = useState<CareGroup | null>(null);
+  const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
+  const [deletingGroupName, setDeletingGroupName] = useState("");
+
+  const [editingRecipient, setEditingRecipient] = useState<CareRecipient | null>(null);
+  const [deletingRecipientId, setDeletingRecipientId] = useState<string | null>(null);
+  const [deletingRecipientName, setDeletingRecipientName] = useState("");
+
   const headingId = `group-heading-${group.id}`;
   const recipientHeadingId = `recipient-heading-${group.id}`;
   const membersHeadingId = `members-heading-${group.id}`;
@@ -29,7 +34,32 @@ export function CareGroupPanel({
   return (
     <section aria-labelledby={headingId} className={styles.panel}>
       <header className={styles.header}>
-        <h2 id={headingId}>{group.name}</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexWrap: "wrap" }}>
+          <h2 id={headingId} style={{ margin: 0 }}>{group.name}</h2>
+          <div style={{ display: "flex", gap: "var(--space-1)" }}>
+            <button
+              type="button"
+              className="btn btn--secondary"
+              style={{ padding: "var(--space-1) var(--space-2)", fontSize: "0.8rem", minHeight: "auto", border: "1px solid var(--color-border)" }}
+              onClick={() => setEditingGroup(group)}
+              aria-label={`Editar Grupo: ${group.name}`}
+            >
+              ✏️
+            </button>
+            <button
+              type="button"
+              className="btn btn--danger"
+              style={{ padding: "var(--space-1) var(--space-2)", fontSize: "0.8rem", minHeight: "auto", backgroundColor: "var(--color-danger)", color: "#fff" }}
+              onClick={() => {
+                setDeletingGroupId(group.id);
+                setDeletingGroupName(group.name);
+              }}
+              aria-label={`Excluir Grupo: ${group.name}`}
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
         <time
           dateTime={group.created_at}
           className={styles.meta}
@@ -45,7 +75,32 @@ export function CareGroupPanel({
           aria-labelledby={recipientHeadingId}
           className={styles.recipientCard}
         >
-          <h3 id={recipientHeadingId}>Pessoa Cuidada</h3>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-3)", flexWrap: "wrap" }}>
+            <h3 id={recipientHeadingId} style={{ margin: 0 }}>Pessoa Cuidada</h3>
+            <div style={{ display: "flex", gap: "var(--space-1)" }}>
+              <button
+                type="button"
+                className="btn btn--secondary"
+                style={{ padding: "var(--space-1) var(--space-2)", fontSize: "0.8rem", minHeight: "auto", border: "1px solid var(--color-border)" }}
+                onClick={() => setEditingRecipient(recipient)}
+                aria-label={`Editar Paciente: ${recipient.name}`}
+              >
+                ✏️
+              </button>
+              <button
+                type="button"
+                className="btn btn--danger"
+                style={{ padding: "var(--space-1) var(--space-2)", fontSize: "0.8rem", minHeight: "auto", backgroundColor: "var(--color-danger)", color: "#fff" }}
+                onClick={() => {
+                  setDeletingRecipientId(recipient.id);
+                  setDeletingRecipientName(recipient.name);
+                }}
+                aria-label={`Excluir Paciente: ${recipient.name}`}
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
           <dl className={styles.detailList}>
             <dt>Nome</dt>
             <dd>{recipient.name}</dd>
@@ -120,6 +175,50 @@ export function CareGroupPanel({
           <p role="status">Nenhum membro neste grupo.</p>
         )}
       </section>
+
+      {editingGroup && (
+        <EditFormModal
+          title="Editar Grupo de Cuidado"
+          type="group"
+          initialData={editingGroup}
+          onClose={() => setEditingGroup(null)}
+          onSubmitAction={updateCareGroupAction.bind(null, editingGroup.id)}
+        />
+      )}
+
+      {deletingGroupId && (
+        <EditFormModal
+          title={`Excluir Grupo: ${deletingGroupName}`}
+          type="delete_confirm"
+          onClose={() => {
+            setDeletingGroupId(null);
+            setDeletingGroupName("");
+          }}
+          onDeleteAction={() => deleteCareGroupAction(deletingGroupId)}
+        />
+      )}
+
+      {editingRecipient && (
+        <EditFormModal
+          title="Editar Paciente"
+          type="recipient"
+          initialData={editingRecipient}
+          onClose={() => setEditingRecipient(null)}
+          onSubmitAction={updateCareRecipientAction.bind(null, editingRecipient.id)}
+        />
+      )}
+
+      {deletingRecipientId && (
+        <EditFormModal
+          title={`Excluir Paciente: ${deletingRecipientName}`}
+          type="delete_confirm"
+          onClose={() => {
+            setDeletingRecipientId(null);
+            setDeletingRecipientName("");
+          }}
+          onDeleteAction={() => deleteCareRecipientAction(deletingRecipientId)}
+        />
+      )}
     </section>
   );
 }

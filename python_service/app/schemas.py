@@ -129,3 +129,30 @@ class MedicationLogResponse(BaseModel):
     notes: Optional[str] = None
     stock_alert: bool = False
     remaining_balance: int
+
+# ---------------------------------------------------------------------------
+# Update Schemas — Phase 5 (Full CRUD)
+# ---------------------------------------------------------------------------
+
+class CareGroupUpdate(BaseModel):
+    name: Optional[str] = None
+
+class CareRecipientUpdate(BaseModel):
+    name: Optional[str] = None
+    blood_type: Optional[str] = None
+    allergies: Optional[List[str]] = None
+    emergency_contacts: Optional[List[dict[str, Any]]] = None
+
+class TaskUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    due_date: Optional[datetime] = None
+    status: Optional[TaskStatus] = None
+    recurrence_rule: Optional[str] = None
+
+class ProtocolUpdate(BaseModel):
+    medication_name: Optional[str] = None
+    dosage: Optional[str] = None
+    frequency_interval_hours: Optional[int] = None
+    stock_count: Optional[int] = None
+    safety_threshold: Optional[int] = None

@@ -142,8 +142,61 @@ class CareRecipientResponse(BaseModel):
 
 ### BR-TSK-01: Autorização de Criação de Tarefas
 - **Precondição:** Usuário JWT válido e ativo.
-- **Ação:** Valida a associação na tabela `care_group_members` para o `user_id` e `group_id`. Se o usuário não for membro do grupo, retorna `403 Forbidden`.
+- **Ação:** Valida a associação na tabela `care_group_members` para o `user_id` e `group_id`. Si o usuário não for membro do grupo, retorna `403 Forbidden`.
 
 ### BR-PRT-01: Autorização de Criação de Protocolos
 - **Precondição:** Usuário JWT válido e ativo.
 - **Ação:** Busca o `care_group_id` a partir do `recipient_id` informado. Valida a associação na tabela `care_group_members` para o `user_id` e `care_group_id`. Se o usuário não for membro do grupo, retorna `403 Forbidden`.
+
+### BR-CG-02 & BR-CG-03: Autorização de Alteração de Grupo
+- **Precondição:** Usuário JWT válido e membro do respectivo grupo.
+
+### BR-CR-03 & BR-CR-04: Autorização de Alteração de Receptor
+- **Precondição:** Usuário JWT válido e membro do respectivo grupo do receptor.
+
+### BR-TSK-02 & BR-TSK-03: Autorização de Alteração de Tarefa
+- **Precondição:** Usuário JWT válido e membro do respectivo grupo da tarefa.
+
+### BR-PRT-02 & BR-PRT-03: Autorização de Alteração de Protocolo
+- **Precondição:** Usuário JWT válido e membro do respectivo grupo do receptor do protocolo.
+
+---
+
+## 5. Endpoints de Controle Total (PATCH / DELETE - Fase 5)
+
+**`PATCH /api/v1/care-groups/{group_id}`**
+- **Auth:** Requer JWT Bearer Token.
+- **Request Body:** `CareGroupUpdate`
+- **Response:** `200 OK` → `CareGroupResponse`
+
+**`DELETE /api/v1/care-groups/{group_id}`**
+- **Auth:** Requer JWT Bearer Token.
+- **Response:** `204 No Content`
+
+**`PATCH /api/v1/care-recipients/{recipient_id}`**
+- **Auth:** Requer JWT Bearer Token.
+- **Request Body:** `CareRecipientUpdate`
+- **Response:** `200 OK` → `CareRecipientResponse`
+
+**`DELETE /api/v1/care-recipients/{recipient_id}`**
+- **Auth:** Requer JWT Bearer Token.
+- **Response:** `204 No Content`
+
+**`PATCH /api/v1/tasks/{task_id}`**
+- **Auth:** Requer JWT Bearer Token.
+- **Request Body:** `TaskUpdate`
+- **Response:** `200 OK` → `TaskResponse`
+
+**`DELETE /api/v1/tasks/{task_id}`**
+- **Auth:** Requer JWT Bearer Token.
+- **Response:** `204 No Content`
+
+**`PATCH /api/v1/protocols/{protocol_id}`**
+- **Auth:** Requer JWT Bearer Token.
+- **Request Body:** `ProtocolUpdate`
+- **Response:** `200 OK` → `MedicationProtocolResponse`
+
+**`DELETE /api/v1/protocols/{protocol_id}`**
+- **Auth:** Requer JWT Bearer Token.
+- **Response:** `204 No Content`
+

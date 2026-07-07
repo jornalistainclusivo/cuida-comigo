@@ -15,6 +15,8 @@ import { useState, useCallback } from "react";
 import type { Task, TaskStatus } from "@/types";
 import styles from "./TaskPanel.module.css";
 import { CreateTaskForm } from "./CreateTaskForm";
+import { updateTaskAction, deleteTaskAction } from "../app/actions";
+import { EditFormModal } from "./EditFormModal";
 
 interface TaskPanelProps {
   groupId: string;
@@ -50,6 +52,9 @@ export function TaskPanel({
   const [announcement, setAnnouncement] = useState("");
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+  const [deletingTaskTitle, setDeletingTaskTitle] = useState("");
 
   const headingId = "task-panel-heading";
 
@@ -144,13 +149,38 @@ export function TaskPanel({
                   aria-labelledby={`task-title-${task.id}`}
                 >
                   <header className={styles.taskHeader}>
-                    <h3 id={`task-title-${task.id}`}>{task.title}</h3>
-                    <span
-                      className={`badge ${STATUS_CSS[task.status]}`}
-                      aria-label={`Status: ${STATUS_LABELS[task.status]}`}
-                    >
-                      {STATUS_LABELS[task.status]}
-                    </span>
+                    <h3 id={`task-title-${task.id}`} style={{ margin: 0 }}>{task.title}</h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+                      <span
+                        className={`badge ${STATUS_CSS[task.status]}`}
+                        aria-label={`Status: ${STATUS_LABELS[task.status]}`}
+                      >
+                        {STATUS_LABELS[task.status]}
+                      </span>
+                      <div style={{ display: "flex", gap: "var(--space-1)" }}>
+                        <button
+                          type="button"
+                          className="btn btn--secondary"
+                          style={{ padding: "var(--space-1) var(--space-2)", fontSize: "0.85rem", minHeight: "auto", border: "1px solid var(--color-border)" }}
+                          onClick={() => setEditingTask(task)}
+                          aria-label={`Editar Tarefa: ${task.title}`}
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn--danger"
+                          style={{ padding: "var(--space-1) var(--space-2)", fontSize: "0.85rem", minHeight: "auto", backgroundColor: "var(--color-danger)", color: "#fff" }}
+                          onClick={() => {
+                            setDeletingTaskId(task.id);
+                            setDeletingTaskTitle(task.title);
+                          }}
+                          aria-label={`Excluir Tarefa: ${task.title}`}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
                   </header>
 
                   {task.description && (
@@ -224,6 +254,28 @@ export function TaskPanel({
             </button>
           </div>
         )
+      )}
+
+      {editingTask && (
+        <EditFormModal
+          title="Editar Tarefa"
+          type="task"
+          initialData={editingTask}
+          onClose={() => setEditingTask(null)}
+          onSubmitAction={updateTaskAction.bind(null, editingTask.id)}
+        />
+      )}
+
+      {deletingTaskId && (
+        <EditFormModal
+          title={`Excluir Tarefa: ${deletingTaskTitle}`}
+          type="delete_confirm"
+          onClose={() => {
+            setDeletingTaskId(null);
+            setDeletingTaskTitle("");
+          }}
+          onDeleteAction={() => deleteTaskAction(deletingTaskId)}
+        />
       )}
     </section>
   );

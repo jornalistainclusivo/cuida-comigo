@@ -225,3 +225,296 @@ export async function createProtocolAction(
     return { success: false, error: "Erro de conexão com o servidor." };
   }
 }
+
+/**
+ * Server Action: Editar Tarefa
+ */
+export async function updateTaskAction(
+  taskId: string,
+  prevState: FormState | null,
+  formData: FormData
+): Promise<FormState> {
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const dueDateStr = formData.get("due_date") as string;
+  const status = formData.get("status") as string;
+
+  if (!title || !dueDateStr) {
+    return { success: false, error: "Título e data de vencimento são obrigatórios." };
+  }
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) return { success: false, error: "Sessão expirada." };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title,
+        description: description || null,
+        due_date: new Date(dueDateStr).toISOString(),
+        status: status || undefined,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, error: data.detail || "Falha ao editar tarefa." };
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("updateTaskAction error:", error);
+    return { success: false, error: "Erro de conexão." };
+  }
+}
+
+/**
+ * Server Action: Excluir Tarefa
+ */
+export async function deleteTaskAction(taskId: string): Promise<FormState> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) return { success: false, error: "Sessão expirada." };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      return { success: false, error: data.detail || "Falha ao excluir tarefa." };
+    }
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("deleteTaskAction error:", error);
+    return { success: false, error: "Erro de conexão." };
+  }
+}
+
+/**
+ * Server Action: Editar Medicamento (Protocolo)
+ */
+export async function updateProtocolAction(
+  protocolId: string,
+  prevState: FormState | null,
+  formData: FormData
+): Promise<FormState> {
+  const medicationName = formData.get("medication_name") as string;
+  const dosage = formData.get("dosage") as string;
+  const frequencyRaw = formData.get("frequency_interval_hours") as string;
+  const stockRaw = formData.get("stock_count") as string;
+  const safetyRaw = formData.get("safety_threshold") as string;
+
+  if (!medicationName || !dosage || !frequencyRaw || !stockRaw || !safetyRaw) {
+    return { success: false, error: "Todos os campos são obrigatórios." };
+  }
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) return { success: false, error: "Sessão expirada." };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/protocols/${protocolId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        medication_name: medicationName,
+        dosage,
+        frequency_interval_hours: parseInt(frequencyRaw, 10),
+        stock_count: parseInt(stockRaw, 10),
+        safety_threshold: parseInt(safetyRaw, 10),
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, error: data.detail || "Falha ao editar medicamento." };
+
+    revalidatePath("/medicamentos");
+    return { success: true };
+  } catch (error) {
+    console.error("updateProtocolAction error:", error);
+    return { success: false, error: "Erro de conexão." };
+  }
+}
+
+/**
+ * Server Action: Excluir Medicamento (Protocolo)
+ */
+export async function deleteProtocolAction(protocolId: string): Promise<FormState> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) return { success: false, error: "Sessão expirada." };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/protocols/${protocolId}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      return { success: false, error: data.detail || "Falha ao excluir medicamento." };
+    }
+
+    revalidatePath("/medicamentos");
+    return { success: true };
+  } catch (error) {
+    console.error("deleteProtocolAction error:", error);
+    return { success: false, error: "Erro de conexão." };
+  }
+}
+
+/**
+ * Server Action: Editar Grupo de Cuidado
+ */
+export async function updateCareGroupAction(
+  groupId: string,
+  prevState: FormState | null,
+  formData: FormData
+): Promise<FormState> {
+  const name = formData.get("name") as string;
+  if (!name) return { success: false, error: "Nome do grupo é obrigatório." };
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) return { success: false, error: "Sessão expirada." };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/care-groups/${groupId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, error: data.detail || "Falha ao editar grupo." };
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("updateCareGroupAction error:", error);
+    return { success: false, error: "Erro de conexão." };
+  }
+}
+
+/**
+ * Server Action: Editar Receptor (Paciente)
+ */
+export async function updateCareRecipientAction(
+  recipientId: string,
+  prevState: FormState | null,
+  formData: FormData
+): Promise<FormState> {
+  const name = formData.get("name") as string;
+  const bloodType = formData.get("blood_type") as string;
+  const allergiesRaw = formData.get("allergies") as string;
+
+  if (!name) return { success: false, error: "Nome do paciente é obrigatório." };
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) return { success: false, error: "Sessão expirada." };
+
+  const allergies = allergiesRaw ? allergiesRaw.split(",").map(s => s.trim()).filter(Boolean) : [];
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/care-recipients/${recipientId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        blood_type: bloodType || null,
+        allergies,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, error: data.detail || "Falha ao editar paciente." };
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("updateCareRecipientAction error:", error);
+    return { success: false, error: "Erro de conexão." };
+  }
+}
+
+/**
+ * Server Action: Excluir Grupo de Cuidado
+ */
+export async function deleteCareGroupAction(groupId: string): Promise<FormState> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) return { success: false, error: "Sessão expirada." };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/care-groups/${groupId}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      return { success: false, error: data.detail || "Falha ao excluir grupo." };
+    }
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("deleteCareGroupAction error:", error);
+    return { success: false, error: "Erro de conexão." };
+  }
+}
+
+/**
+ * Server Action: Excluir Paciente
+ */
+export async function deleteCareRecipientAction(recipientId: string): Promise<FormState> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) return { success: false, error: "Sessão expirada." };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/care-recipients/${recipientId}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      return { success: false, error: data.detail || "Falha ao excluir paciente." };
+    }
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("deleteCareRecipientAction error:", error);
+    return { success: false, error: "Erro de conexão." };
+  }
+}

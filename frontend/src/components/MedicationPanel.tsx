@@ -4,6 +4,8 @@ import { useState } from "react";
 import type { MedicationProtocol } from "@/types";
 import styles from "./MedicationPanel.module.css";
 import { CreateProtocolForm } from "./CreateProtocolForm";
+import { updateProtocolAction, deleteProtocolAction } from "../app/actions";
+import { EditFormModal } from "./EditFormModal";
 
 interface MedicationPanelProps {
   recipientId: string;
@@ -17,6 +19,9 @@ export function MedicationPanel({ recipientId, recipientName, protocols, onLogMe
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingProtocol, setEditingProtocol] = useState<MedicationProtocol | null>(null);
+  const [deletingProtocolId, setDeletingProtocolId] = useState<string | null>(null);
+  const [deletingProtocolName, setDeletingProtocolName] = useState("");
 
   const handleOpenConfirm = (protocolId: string) => {
     setSelectedProtocolId(protocolId);
@@ -103,7 +108,32 @@ export function MedicationPanel({ recipientId, recipientName, protocols, onLogMe
               >
                 <div className={styles.cardHeader}>
                   <div className={styles.info}>
-                    <h3 className={styles.name}>{protocol.medication_name}</h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexWrap: "wrap" }}>
+                      <h3 className={styles.name}>{protocol.medication_name}</h3>
+                      <div style={{ display: "flex", gap: "var(--space-1)" }}>
+                        <button
+                          type="button"
+                          className="btn btn--secondary"
+                          style={{ padding: "var(--space-1) var(--space-2)", fontSize: "0.8rem", minHeight: "auto", border: "1px solid var(--color-border)" }}
+                          onClick={() => setEditingProtocol(protocol)}
+                          aria-label={`Editar Medicamento: ${protocol.medication_name}`}
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn--danger"
+                          style={{ padding: "var(--space-1) var(--space-2)", fontSize: "0.8rem", minHeight: "auto", backgroundColor: "var(--color-danger)", color: "#fff" }}
+                          onClick={() => {
+                            setDeletingProtocolId(protocol.id);
+                            setDeletingProtocolName(protocol.medication_name);
+                          }}
+                          aria-label={`Excluir Medicamento: ${protocol.medication_name}`}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
                     <p className={styles.details}>
                       {protocol.dosage} • A cada {protocol.frequency_interval_hours}h
                     </p>
@@ -155,6 +185,28 @@ export function MedicationPanel({ recipientId, recipientName, protocols, onLogMe
             );
           })}
         </div>
+      )}
+
+      {editingProtocol && (
+        <EditFormModal
+          title="Editar Medicamento"
+          type="protocol"
+          initialData={editingProtocol}
+          onClose={() => setEditingProtocol(null)}
+          onSubmitAction={updateProtocolAction.bind(null, editingProtocol.id)}
+        />
+      )}
+
+      {deletingProtocolId && (
+        <EditFormModal
+          title={`Excluir Medicamento: ${deletingProtocolName}`}
+          type="delete_confirm"
+          onClose={() => {
+            setDeletingProtocolId(null);
+            setDeletingProtocolName("");
+          }}
+          onDeleteAction={() => deleteProtocolAction(deletingProtocolId)}
+        />
       )}
     </section>
   );

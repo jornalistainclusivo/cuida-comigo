@@ -4,8 +4,9 @@ from sqlmodel import select
 import uuid
 
 from app.database import get_session
-from app.models import Task, TaskStatus, CareGroupMember, utc_now
-from app.schemas import TaskClaimRequest, TaskClaimResponse, TaskResponse
+from app.models import Task, TaskStatus, CareGroupMember, utc_now, User
+from app.schemas import TaskClaimRequest, TaskClaimResponse, TaskResponse, TaskUpdate
+from app.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/api/v1/tasks", tags=["Tasks"])
 
@@ -53,3 +54,57 @@ async def complete_task(task_id: uuid.UUID, background_tasks: BackgroundTasks, s
     background_tasks.add_task(notify_group_task_completed, task.id)
     
     return task
+
+@router.patch("/{task_id}", response_model=TaskResponse)
+async def update_task(
+    task_id: uuid.UUID,
+    payload: TaskUpdate,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    task = await session.get(Task, task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    # Verify membership in care group
+    member_stmt = select(CareGroupMember).where(
+        CareGroupMember.care_group_id == task.care_group_id,
+        CareGroupMember.user_id == current_user.id
+    )
+    member_result = await session.execute(member_stmt)
+    member = member_result.scalar_one_or_none()
+    if not member:
+        raise HTTPException(status_code=403, detail="Not a member of the CareGroup for this task")
+
+    update_data = payload.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(task, key, value)
+        
+    task.updated_at = utc_now()
+    session.add(task)
+    await session.commit()
+    await session.refresh(task)
+    return task
+
+@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_task(
+    task_id: uuid.UUID,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    task = await session.get(Task, task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    # Verify membership in care group
+    member_stmt = select(CareGroupMember).where(
+        CareGroupMember.care_group_id == task.care_group_id,
+        CareGroupMember.user_id == current_user.id
+    )
+    member_result = await session.execute(member_stmt)
+    member = member_result.scalar_one_or_none()
+    if not member:
+        raise HTTPException(status_code=403, detail="Not a member of the CareGroup for this task")
+
+    await session.delete(task)
+    await session.commit()
