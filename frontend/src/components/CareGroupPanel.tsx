@@ -225,27 +225,27 @@ export function CareGroupPanel({
             <div
               style={{
                 marginTop: "var(--space-4)",
-                padding: "var(--space-3)",
-                backgroundColor: "var(--color-bg-secondary, #1a2327)",
-                border: "1px solid var(--color-border, #2d3b41)",
+                padding: "var(--space-4)",
+                backgroundColor: "var(--color-surface-sunken)",
+                border: "1px solid var(--color-border)",
                 borderRadius: "var(--radius-xl)",
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--space-2)",
+                gap: "var(--space-3)",
               }}
             >
-              <h4 style={{ margin: 0, fontSize: "0.95rem", color: "#2dd4bf" }}>
+              <h4 style={{ margin: 0, fontSize: "1rem", color: "var(--color-primary)" }}>
                 Gerenciar Círculo de Cuidado
               </h4>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--color-text-secondary, #94a3b8)" }}>
+              <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--color-text-secondary)", lineHeight: "var(--line-height-normal)" }}>
                 Gere um link de convite atrelado a este grupo de cuidado. Novos membros entrarão automaticamente como <strong>Cuidadores</strong>. O convite expira em 48 horas.
               </p>
               
-              <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap", alignItems: "center", marginTop: "var(--space-1)" }}>
+              <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap", alignItems: "center" }}>
                 <button
                   type="button"
-                  className="btn btn--secondary"
-                  style={{ minHeight: "auto", padding: "var(--space-1) var(--space-3)", border: "1px solid var(--color-border)" }}
+                  className="btn btn--primary"
+                  style={{ minHeight: "auto", padding: "var(--space-2) var(--space-4)" }}
                   onClick={handleGenerateInvite}
                   disabled={generating}
                 >
@@ -254,8 +254,8 @@ export function CareGroupPanel({
                 {inviteLink && (
                   <button
                     type="button"
-                    className="btn btn--primary"
-                    style={{ minHeight: "auto", padding: "var(--space-1) var(--space-3)", backgroundColor: "#d97706", color: "#fff" }}
+                    className="btn btn--accent"
+                    style={{ minHeight: "auto", padding: "var(--space-2) var(--space-4)" }}
                     onClick={handleCopyLink}
                   >
                     {copied ? "✓ Copiado!" : "Copiar Link"}
@@ -268,11 +268,11 @@ export function CareGroupPanel({
                   style={{
                     fontSize: "0.8rem",
                     wordBreak: "break-all",
-                    padding: "var(--space-1) var(--space-2)",
-                    backgroundColor: "#0f172a",
-                    border: "1px solid #1e293b",
+                    padding: "var(--space-2)",
+                    backgroundColor: "var(--color-surface)",
+                    border: "1px solid var(--color-border)",
                     borderRadius: "var(--radius-md)",
-                    color: "#38bdf8",
+                    color: "var(--color-primary)",
                   }}
                 >
                   {inviteLink}
@@ -280,7 +280,7 @@ export function CareGroupPanel({
               )}
 
               {inviteError && (
-                <span style={{ fontSize: "0.85rem", color: "var(--color-danger, #ef4444)" }}>
+                <span style={{ fontSize: "0.875rem", color: "var(--color-danger)" }}>
                   {inviteError}
                 </span>
               )}
