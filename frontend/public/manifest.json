@@ -1,14 +1,18 @@
 {
-  "name": "Orquestração do Cuidado",
-  "short_name": "Cuidado",
-  "description": "Plataforma de gestão compartilhada para descentralizar a carga cognitiva de cuidadores informais.",
+  "name": "Cuida Comigo",
+  "short_name": "Cuida Comigo",
+  "description": "Ninguém precisa cuidar sozinho. Plataforma de gestão compartilhada para cuidadores informais.",
   "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#0D4F4F",
   "background_color": "#FFFFFF",
   "lang": "pt-BR",
+  "dir": "ltr",
   "categories": ["health", "medical", "lifestyle"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -21,6 +25,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Painel de Cuidado",
+      "short_name": "Painel",
+      "description": "Acesse o painel principal de cuidados",
+      "url": "/",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Farmácia",
+      "short_name": "Farmácia",
+      "description": "Gerencie protocolos de medicação",
+      "url": "/medicamentos",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

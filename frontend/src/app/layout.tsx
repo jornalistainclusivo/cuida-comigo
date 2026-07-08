@@ -36,19 +36,6 @@ export default async function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-        {/* Service Worker registration */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js')
-                    .catch(() => { /* SW registration failed — non-blocking */ });
-                });
-              }
-            `,
-          }}
-        />
       </head>
       <body>
         <SkipLink />
