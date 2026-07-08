@@ -99,3 +99,9 @@
   font-size: var(--font-size-sm);
   margin-top: var(--space-2);
 }
+
+.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+

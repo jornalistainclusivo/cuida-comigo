@@ -1,4 +1,5 @@
 import { getMyGroupIdAction, getNotificationsAction } from "@/app/actions/notifications";
+import NotificationItem from "@/components/NotificationItem";
 import styles from "./page.module.css";
 import Link from "next/link";
 
@@ -33,20 +34,7 @@ export default async function NotificacoesPage() {
       ) : (
         <ul className={styles.notificationList}>
           {notifications.map((n) => (
-            <li key={n.id} className={`${styles.notificationItem} ${!n.is_read ? styles.unread : ""}`}>
-              <div className={styles.icon}>
-                {n.type === "DOSE_REGISTERED" && "💊"}
-                {n.type === "TASK_CREATED" && "📋"}
-                {n.type === "TASK_COMPLETED" && "✅"}
-                {n.type === "STOCK_ALERT" && "⚠️"}
-                {!["DOSE_REGISTERED", "TASK_CREATED", "TASK_COMPLETED", "STOCK_ALERT"].includes(n.type) && "🔔"}
-              </div>
-              <div className={styles.content}>
-                <strong>{n.title}</strong>
-                <p>{n.message}</p>
-                <small>{new Date(n.created_at).toLocaleString("pt-BR")}</small>
-              </div>
-            </li>
+            <NotificationItem key={n.id} notification={n} />
           ))}
         </ul>
       )}

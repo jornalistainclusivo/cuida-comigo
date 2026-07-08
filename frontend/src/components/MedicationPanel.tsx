@@ -126,16 +126,20 @@ export function MedicationPanel({ recipientId, recipientName, protocols, logs, m
             {protocols.map((protocol) => {
               const isLowStock = protocol.stock_count <= protocol.safety_threshold;
               const isConfirming = selectedProtocolId === protocol.id;
+              const isPastDue = protocol.next_due_at ? new Date(protocol.next_due_at) < new Date() : false;
 
               return (
                 <div 
                   key={protocol.id} 
-                  className={`${styles.card} ${isLowStock ? styles.cardLowStock : ''}`}
+                  className={`${styles.card} ${isLowStock ? styles.cardLowStock : ''} ${isPastDue ? styles.cardPastDue : ''}`}
                 >
                   <div className={styles.cardHeader}>
                     <div className={styles.info}>
                       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexWrap: "wrap" }}>
                         <h3 className={styles.name}>{protocol.medication_name}</h3>
+                        {isPastDue && (
+                          <span className={styles.overdueBadge}>Atrasado</span>
+                        )}
                         <div style={{ display: "flex", gap: "var(--space-1)" }}>
                           <button
                             type="button"

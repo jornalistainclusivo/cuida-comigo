@@ -83,3 +83,31 @@ export async function getMyGroupIdAction(): Promise<string | null> {
     return null;
   }
 }
+
+/**
+ * Marks a notification as read.
+ * @param notificationId - UUID of the notification
+ */
+export async function markNotificationAsReadAction(notificationId: string): Promise<boolean> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+
+  if (!token || !notificationId) return false;
+
+  try {
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/v1/notifications/${notificationId}/read`,
+      {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      }
+    );
+
+    return res.ok;
+  } catch (error) {
+    console.error("[markNotificationAsReadAction] Fetch error:", error);
+    return false;
+  }
+}
+

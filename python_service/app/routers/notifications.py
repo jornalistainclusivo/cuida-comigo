@@ -67,3 +67,41 @@ async def list_notifications(
     result = await session.execute(query)
     notifications = result.scalars().all()
     return notifications
+
+@router.patch(
+    "/api/v1/notifications/{notification_id}/read",
+    response_model=NotificationResponse,
+    summary="Mark a notification as read",
+)
+async def mark_notification_as_read(
+    notification_id: uuid.UUID,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    """Marks a specific notification as read.
+
+    RBAC: User must be a member of the group the notification belongs to.
+    """
+    notification = await session.get(Notification, notification_id)
+    if not notification:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Notification not found")
+
+    # Verify current user is a member of the group
+    member_stmt = select(CareGroupMember).where(
+        CareGroupMember.care_group_id == notification.care_group_id,
+        CareGroupMember.user_id == current_user.id,
+    )
+    member_result = await session.execute(member_stmt)
+    member = member_result.scalar_one_or_none()
+    if not member:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not a member of the group this notification belongs to",
+        )
+
+    notification.is_read = True
+    session.add(notification)
+    await session.commit()
+    await session.refresh(notification)
+    return notification
+

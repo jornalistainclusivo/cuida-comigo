@@ -199,3 +199,35 @@ async def test_logging_dose_updates_next_due_at(client: AsyncClient, async_sessi
 
     assert updated_protocol.next_due_at is not None
 
+
+# ---------------------------------------------------------------------------
+# Tests — Mark as Read
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_mark_notification_as_read(client: AsyncClient, async_session: AsyncSession):
+    user, group, _, _, _ = await create_full_setup(async_session, role=UserRole.ADMIN)
+
+    notification = Notification(
+        care_group_id=group.id,
+        title="Nova Notificação",
+        message="Mensagem de teste",
+        type=NotificationType.TASK_COMPLETED,
+        is_read=False,
+    )
+    async_session.add(notification)
+    await async_session.flush()
+
+    app.dependency_overrides[get_current_user] = lambda: user
+
+    response = await client.patch(f"/api/v1/notifications/{notification.id}/read")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["is_read"] is True
+
+    # Verify in DB
+    await async_session.execute(select(Notification).limit(0))
+    stmt = select(Notification).where(Notification.id == notification.id)
+    result = await async_session.execute(stmt)
+    db_notification = result.scalar_one_or_none()
+    assert db_notification.is_read is True
