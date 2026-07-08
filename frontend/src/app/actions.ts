@@ -10,11 +10,16 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL
  * Assumir tarefa: Chama PATCH /tasks/{taskId}/claim no FastAPI
  */
 export async function claimTaskAction(taskId: string, assigneeId: string) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) throw new Error("Sessão expirada.");
+
   try {
     const res = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}/claim`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({ assignee_id: assigneeId }),
     });
@@ -34,16 +39,22 @@ export async function claimTaskAction(taskId: string, assigneeId: string) {
  * Concluir tarefa: Chama PATCH /tasks/{taskId}/complete no FastAPI
  */
 export async function completeTaskAction(taskId: string) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("cc_access_token")?.value;
+  if (!token) throw new Error("Sessão expirada.");
+
   try {
     const res = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}/complete`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
     });
 
     if (!res.ok) {
-      throw new Error("Failed to complete task");
+      const data = await res.json().catch(() => null);
+      throw new Error(data?.detail || "Failed to complete task");
     }
   } catch (error) {
     console.error("completeTaskAction error:", error);
