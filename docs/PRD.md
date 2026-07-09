@@ -59,14 +59,12 @@ O aplicativo deve proporcionar paz de espírito, evitando superdosagem de medica
 - **Agenda de Consultas Integrada:** Um calendário focado no paciente para agendar, lembrar e organizar idas a médicos e terapeutas.
 - **Arquivo de Documentos Clínicos:** Repositório seguro na nuvem para armazenar receitas médicas, laudos, exames e imagens.
 - **Relatório Semanal para a Família:** Geração de resumos automáticos (PDF/App) detalhando a evolução do paciente e a execução de tarefas para manter a rede de apoio informada.
-- **Comunicação Multicanal e In-App:** Chat seguro e lembretes críticos de emergência disparados via WhatsApp/SMS `[🟡 Assumed — validate API costs/provider: Twilio/Zenvia]`.
 - **Telemedicina Simplificada:** Atalho para agendamento de consultas ou chamadas de vídeo rápidas com profissionais da saúde.
 
 ### 4.2. Centralização do Histórico de Saúde
 - **Diário de Evolução com Tags de Sintomas:** Permite o registro rápido e estruturado de alterações no quadro do paciente.
 - **Controle de Mobilidade, Higiene e Tratamentos:** Trilhas de tarefas especializadas contínuas (ex: fisioterapia, fonoaudiologia).
 - **Acompanhamento Nutricional e Saúde Mental:** Módulos para registrar a ingestão alimentar, hidratação, oscilações de humor e bem-estar geral.
-- **Integração com Wearables:** Captura autônoma de sinais vitais via smartwatches e envio de alertas preditivos `[🟡 Assumed — validate hardware API access: Apple Health/Google Fit]`.
 
 ### 4.3. Gestão Financeira e Transparência
 - **Registro de Gastos:** Lançamento de despesas médicas, farmácia, honorários de cuidadores e alimentação.
@@ -96,5 +94,5 @@ This PRD is the input for:
 - **SDD (Architecture):** Use `sdd-creator`. Sections to focus on: Tech Considerations, Data Requirements, Performance Specs.
 - **Spec (Technical Spec):** Use `spec-creator`. Sections to focus on: Functional Requirements, Acceptance Criteria, Business Rules.
 
-PRD Status: draft
-Ready for SDD: no — pending: technical validation for Wearables integration and WhatsApp/SMS notification costs.
+PRD Status: approved
+Ready for SDD: yes
