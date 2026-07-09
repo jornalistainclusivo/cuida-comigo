@@ -1,21 +1,21 @@
-# 🤖 feat: Implementa camada de Fundação de Agendamento (Fase 10.2)
+# 🤖 docs: reconstrução arquitetural (PRD/SDD)
 
 ## 📝 Resumo do Contexto
 
-Implementação dos campos `next_due_at` e `assignee_id` na entidade de Protocolos de Medicamentos para viabilizar alertas pontuais e delegação de cuidados via RBAC. As mudanças englobam o Backend (FastAPI, SQLModel, Alembic migrações) e o Frontend (React Server Actions, Tipagens de Domínio, Next.js e UI com inputs de `datetime-local` e dropdowns).
+Reorganização histórica da documentação para atender aos padrões de governança JINC. A pasta antiga `specs/` (com arquivos mistos de PRD e Tech Spec da v0.1 a v0.9) foi arquivada em `docs/archive/legacy_specs_v1/`. Foram gerados `PRD.md` e `SDD.md` na raiz de `docs/` atuando como as únicas fontes de verdade, baseados na realidade do código (v1.4.0). Além disso, criamos a estrutura `docs/specs/notificacoes-e-cron/` contendo os 4 arquivos de spec, formalizando a arquitetura introduzida nas fases 10.1 e 10.2.
 
 ## 🔗 Issue / Ticket
 
-Ref: Fase 10.2 Passo A
+Ref: #000
 
 ## 🏷️ Escopo de Mudança (Selecione)
 
 - [ ] `a11y`: Acessibilidade (Sensorial ou Cognitiva).
-- [x] `sec`: Correção/Aprimoramento de Segurança. (Isolamento RBAC aplicado no assignee_id).
+- [ ] `sec`: Correção/Aprimoramento de Segurança.
 - [ ] `infra`: Docker, CI/CD, ISR, Deploy.
-- [x] `feat`: Nova funcionalidade.
+- [ ] `feat`: Nova funcionalidade.
 - [ ] `fix`: Correção de bug.
-- [ ] `refactor`: Limpeza de código/Design System.
+- [x] `refactor`: Limpeza de código/Design System/Documentação.
 
 ---
 
@@ -37,12 +37,12 @@ Ref: Fase 10.2 Passo A
 ## 🛠️ DevOps, Higiene & Zero-Trust
 
 - [x] **Secrets:** Ausência absoluta de credenciais. `.env` não versionado.
-- [x] **Higiene Local:** Script `sanitize-local.sh` (comandos similares) executado. Nenhuma contaminação cruzada.
+- [x] **Higiene Local:** Script `sanitize-local.sh` executado. Nenhuma contaminação cruzada.
 - [x] **Docker:** Build multi-stage testado (se aplicável).
-- [x] **Versionamento:** Git Tag Semântica gerada e em remote (`git push origin vX.X.X`).
+- [x] **Versionamento:** Git Tag Semântica gerada e em remote (`git push origin v1.4.1-docs-reconstruction`).
 
 ## 🧪 Plano de Teste e Rollback
 
-1. Comandos para teste: `git fetch && git checkout main && npm run dev`
-2. URL esperada: `http://localhost:3000/medicamentos` e `http://localhost:3000/`
-3. **Plano de Rollback:** Reverter tag/commit da branch caso a migração Alembic gere falhas de performance.
+1. Comandos para teste: `git fetch && git checkout chore/docs-reconstruction`
+2. URL esperada: N/A (Alterações puramente documentais)
+3. **Plano de Rollback:** Reverter tag/commit se o diff causar conflitos de leitura nos agentes.
