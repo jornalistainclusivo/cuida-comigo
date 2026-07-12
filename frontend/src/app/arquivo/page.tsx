@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getDocuments } from "@/app/actions/documents";
 import DocumentUploadForm from "@/components/documents/DocumentUploadForm";
 import DocumentList from "@/components/documents/DocumentList";
 import styles from "@/app/page.module.css";
@@ -19,19 +18,31 @@ export default async function ArquivoPage() {
     redirect("/login");
   }
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || "http://127.0.0.1:8000";
-
   let groups: CareGroup[] = [];
+  let fetchError = false;
   try {
-    const groupsRes = await fetch(`${API_BASE_URL}/api/v1/care-groups`, {
+    const groupsRes = await fetch("http://127.0.0.1:8000/api/v1/care-groups", {
       headers: { "Authorization": `Bearer ${token}` },
       cache: "no-store"
     });
     if (groupsRes.ok) {
       groups = await groupsRes.json();
+    } else {
+      fetchError = true;
     }
   } catch (error) {
     console.error("Erro ao carregar círculos de cuidado:", error);
+    fetchError = true;
+  }
+
+  if (fetchError) {
+    return (
+      <article className={styles.dashboard}>
+        <div style={{ color: "var(--color-danger)", padding: "var(--space-4)", border: "1px solid var(--color-danger)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-danger-light)" }}>
+          Erro de comunicação com a API. Verifique se o servidor Python está rodando.
+        </div>
+      </article>
+    );
   }
 
   if (groups.length === 0) {
@@ -42,12 +53,31 @@ export default async function ArquivoPage() {
   console.log("Forcing Turbopack refresh for CSS modules - Group ID:", groupId);
 
   let documents: DocumentResponse[] = [];
-  let error = null;
+  let docsFetchError = false;
 
   try {
-    documents = await getDocuments(groupId);
-  } catch (err: any) {
-    error = err.message || "Não foi possível carregar os documentos.";
+    const docsRes = await fetch(`http://127.0.0.1:8000/api/v1/care-groups/${groupId}/documents`, {
+      headers: { "Authorization": `Bearer ${token}` },
+      cache: "no-store"
+    });
+    if (docsRes.ok) {
+      documents = await docsRes.json();
+    } else {
+      docsFetchError = true;
+    }
+  } catch (error) {
+    console.error("Erro ao carregar documentos:", error);
+    docsFetchError = true;
+  }
+
+  if (fetchError || docsFetchError) {
+    return (
+      <article className={styles.dashboard}>
+        <div className="fallback-alert" style={{ color: "var(--color-danger)", padding: "var(--space-4)", border: "1px solid var(--color-danger)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-danger-light)" }}>
+          Erro de comunicação com a API. Verifique se o servidor Python está rodando.
+        </div>
+      </article>
+    );
   }
 
   return (
@@ -58,12 +88,6 @@ export default async function ArquivoPage() {
           Armazene receitas, laudos, exames e outros documentos médicos.
         </p>
       </header>
-
-      {error && (
-        <div style={{ color: "var(--color-danger)", marginBottom: "var(--space-4)" }}>
-          {error}
-        </div>
-      )}
 
       <section style={{ marginBottom: "var(--space-8)" }}>
         <DocumentUploadForm groupId={groupId} />
