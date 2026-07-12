@@ -1,0 +1,136 @@
+openapi: 3.1.0
+info:
+  title: API Documentos Clínicos (S3/Storage)
+  version: "2.1.0"
+paths:
+  /api/v1/care-groups/{group_id}/documents:
+    get:
+      summary: Lista metadados dos documentos do grupo de cuidado
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: group_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Sucesso (Metadados Listados)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DocumentResponse'
+        '403':
+          description: Acesso Negado (Não pertence ao grupo)
+
+    post:
+      summary: Upload de Documento Clínico para S3 (Max 10MB)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: group_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - title
+                - document_type
+              properties:
+                file:
+                  type: string
+                  format: binary
+                title:
+                  type: string
+                document_type:
+                  type: string
+                  enum: [RECEITA, LAUDO, EXAME, OUTROS]
+      responses:
+        '201':
+          description: Upload Sucedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '403':
+          description: Acesso Negado
+        '413':
+          description: Payload Too Large (acima de 10MB)
+        '415':
+          description: Unsupported Media Type (Não é PDF, JPG ou PNG)
+
+  /api/v1/care-groups/{group_id}/documents/{doc_id}/download:
+    get:
+      summary: Retorna a Presigned URL segura
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: group_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: doc_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Presigned URL gerada (expira em 5 min)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignedUrlResponse'
+        '403':
+          description: Acesso Negado (RBAC bloqueou)
+        '404':
+          description: Documento não encontrado no banco
+
+components:
+  schemas:
+    DocumentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        care_recipient_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        document_type:
+          type: string
+          enum: [RECEITA, LAUDO, EXAME, OUTROS]
+        uploaded_at:
+          type: string
+          format: date-time
+        uploaded_by_id:
+          type: string
+          format: uuid
+      required: [id, care_recipient_id, title, document_type, uploaded_at, uploaded_by_id]
+      
+    PresignedUrlResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        expires_in:
+          type: integer
+          example: 300
+      required: [url, expires_in]
