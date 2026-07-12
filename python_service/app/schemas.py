@@ -252,3 +252,20 @@ class AppointmentResponse(BaseModel):
     provider_name: Optional[str] = None
     location: Optional[str] = None
     created_at: datetime
+
+# ---------------------------------------------------------------------------
+# Arquivo de Documentos Clínicos — Fase v2.1
+# ---------------------------------------------------------------------------
+
+class DocumentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    care_recipient_id: uuid.UUID
+    title: str
+    document_type: str
+    uploaded_at: datetime
+    uploaded_by_id: uuid.UUID
+
+class PresignedUrlResponse(BaseModel):
+    url: str
+    expires_in: int

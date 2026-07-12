@@ -101,6 +101,7 @@ class CareRecipient(SQLModel, table=True):
     care_group: CareGroup = Relationship(back_populates="recipients")
     protocols: List["MedicationProtocol"] = Relationship(back_populates="care_recipient")
     appointments: List["Appointment"] = Relationship(back_populates="care_recipient")
+    documents: List["ClinicalDocument"] = Relationship(back_populates="care_recipient")
 
 class Task(SQLModel, table=True):
     __tablename__ = "tasks"
@@ -190,3 +191,20 @@ class Appointment(SQLModel, table=True):
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=utc_now))
 
     care_recipient: CareRecipient = Relationship(back_populates="appointments")
+
+# ---------------------------------------------------------------------------
+# Arquivo de Documentos Clínicos — Fase v2.1
+# ---------------------------------------------------------------------------
+
+class ClinicalDocument(SQLModel, table=True):
+    __tablename__ = "clinical_documents"
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    care_recipient_id: uuid.UUID = Field(foreign_key="care_recipients.id", index=True)
+    title: str = Field(max_length=255)
+    document_type: str = Field(max_length=50) # RECEITA, LAUDO, EXAME, OUTROS
+    s3_key: str = Field(max_length=1024)
+    uploaded_by_id: uuid.UUID = Field(foreign_key="care_group_members.id")
+    uploaded_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=utc_now))
+
+    care_recipient: CareRecipient = Relationship(back_populates="documents")
