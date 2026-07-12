@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getDocuments } from "@/app/actions/documents";
-import { DocumentUploadForm } from "@/components/documents/DocumentUploadForm";
-import { DocumentList } from "@/components/documents/DocumentList";
+import DocumentUploadForm from "@/components/documents/DocumentUploadForm";
+import DocumentList from "@/components/documents/DocumentList";
 import type { CareGroup } from "@/types";
 import type { DocumentResponse } from "@/types/api";
 
@@ -38,6 +38,7 @@ export default async function ArquivoPage() {
   }
 
   const groupId = groups[0].id;
+  console.log("Forcing Turbopack refresh for CSS modules - Group ID:", groupId);
 
   let documents: DocumentResponse[] = [];
   let error = null;

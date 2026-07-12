@@ -13,7 +13,7 @@ interface DocumentUploadFormProps {
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png"];
 
-export function DocumentUploadForm({ groupId }: DocumentUploadFormProps) {
+export default function DocumentUploadForm({ groupId }: DocumentUploadFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 

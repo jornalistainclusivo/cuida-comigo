@@ -11,7 +11,7 @@ interface DocumentListProps {
   documents: DocumentResponse[];
 }
 
-export function DocumentList({ groupId, documents }: DocumentListProps) {
+export default function DocumentList({ groupId, documents }: DocumentListProps) {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const handleDownload = async (documentId: string) => {
