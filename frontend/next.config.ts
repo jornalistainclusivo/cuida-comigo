@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
   // Suppress Turbopack error: @serwist/next uses webpack plugin;
   // the empty turbopack config tells Next.js this is intentional.
   turbopack: {},
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    }
+  },
   async rewrites() {
     return [
       {
