@@ -12,5 +12,34 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  minio:
+    image: minio/minio
+    container_name: orquestracao-minio
+    restart: always
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  minio-setup:
+    image: minio/mc
+    container_name: orquestracao-minio-setup
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set local http://minio:9000 minioadmin minioadmin;
+      mc mb local/cuidacomigo-docs || true;
+      mc anonymous set public local/cuidacomigo-docs || true;
+      exit 0;
+      "
+
 volumes:
   postgres_data:
+  minio_data:
