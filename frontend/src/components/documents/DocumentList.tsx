@@ -32,16 +32,21 @@ export function DocumentList({ groupId, documents }: DocumentListProps) {
 
   if (documents.length === 0) {
     return (
-      <div className={styles.emptyState}>
-        <p>Nenhum documento encontrado neste grupo.</p>
+      <div className={styles.container}>
+        <h2 className={styles.sectionTitle}>Documentos Salvos</h2>
+        <div className={styles.emptyState}>
+          <p>Nenhum documento encontrado neste grupo.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.list}>
-      {documents.map((doc) => (
-        <article key={doc.id} className={styles.card}>
+    <div className={styles.container}>
+      <h2 className={styles.sectionTitle}>Documentos Salvos</h2>
+      <div className={styles.list}>
+        {documents.map((doc) => (
+          <article key={doc.id} className={styles.card}>
           <div className={styles.info}>
             <h3 className={styles.title}>{doc.title}</h3>
             <p className={styles.detail}>
@@ -59,6 +64,7 @@ export function DocumentList({ groupId, documents }: DocumentListProps) {
           </button>
         </article>
       ))}
+      </div>
     </div>
   );
 }

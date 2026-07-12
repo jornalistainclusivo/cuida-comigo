@@ -65,17 +65,11 @@ export default async function ArquivoPage() {
         </div>
       )}
 
-      <section aria-labelledby="upload-heading" style={{ marginBottom: "var(--space-8)" }}>
-        <h2 id="upload-heading" style={{ fontSize: "var(--font-size-xl)", marginBottom: "var(--space-4)", color: "var(--color-text-primary)" }}>
-          Enviar Novo Documento
-        </h2>
+      <section style={{ marginBottom: "var(--space-8)" }}>
         <DocumentUploadForm groupId={groupId} />
       </section>
 
-      <section aria-labelledby="list-heading">
-        <h2 id="list-heading" style={{ fontSize: "var(--font-size-xl)", marginBottom: "var(--space-4)", color: "var(--color-text-primary)" }}>
-          Documentos Salvos
-        </h2>
+      <section>
         <DocumentList groupId={groupId} documents={documents} />
       </section>
     </div>

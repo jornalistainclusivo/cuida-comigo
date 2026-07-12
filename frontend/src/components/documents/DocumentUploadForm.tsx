@@ -57,48 +57,51 @@ export function DocumentUploadForm({ groupId }: DocumentUploadFormProps) {
   };
 
   return (
-    <form ref={formRef} action={formAction} onSubmit={handleSubmit} className={styles.form} aria-label="Formulário de upload de documento">
-      <div className={styles.formGroup}>
-        <label htmlFor="title" className={styles.label}>Título do Documento</label>
-        <input 
-          type="text" 
-          id="title" 
-          name="title" 
-          required 
-          className={styles.input} 
-          placeholder="Ex: Receita de Insulina" 
-          aria-required="true"
-        />
-      </div>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Enviar Novo Documento</h2>
+      <form ref={formRef} action={formAction} onSubmit={handleSubmit} className={styles.form} aria-label="Formulário de upload de documento">
+        <div className={styles.formGroup}>
+          <label htmlFor="title" className={styles.label}>Título do Documento</label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title" 
+            required 
+            className={styles.input} 
+            placeholder="Ex: Receita de Insulina" 
+            aria-required="true"
+          />
+        </div>
 
-      <div className={styles.formGroup}>
-        <label htmlFor="document_type" className={styles.label}>Tipo de Documento</label>
-        <select id="document_type" name="document_type" required className={styles.select} aria-required="true">
-          <option value="RECEITA">Receita Médica</option>
-          <option value="LAUDO">Laudo</option>
-          <option value="EXAME">Exame</option>
-          <option value="OUTROS">Outros</option>
-        </select>
-      </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="document_type" className={styles.label}>Tipo de Documento</label>
+          <select id="document_type" name="document_type" required className={styles.select} aria-required="true">
+            <option value="RECEITA">Receita Médica</option>
+            <option value="LAUDO">Laudo</option>
+            <option value="EXAME">Exame</option>
+            <option value="OUTROS">Outros</option>
+          </select>
+        </div>
 
-      <div className={styles.formGroup}>
-        <label htmlFor="file" className={styles.label}>Arquivo</label>
-        <input 
-          type="file" 
-          id="file" 
-          name="file" 
-          required 
-          accept=".pdf,.jpg,.jpeg,.png"
-          className={styles.input} 
-          aria-required="true"
-          aria-describedby="file-helper"
-        />
-        <span id="file-helper" className={styles.fileHelper}>Tamanho máximo: 10MB. Formatos: PDF, JPG, PNG.</span>
-      </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="file" className={styles.label}>Arquivo</label>
+          <input 
+            type="file" 
+            id="file" 
+            name="file" 
+            required 
+            accept=".pdf,.jpg,.jpeg,.png"
+            className={styles.input} 
+            aria-required="true"
+            aria-describedby="file-helper"
+          />
+          <span id="file-helper" className={styles.fileHelper}>Tamanho máximo: 10MB. Formatos: PDF, JPG, PNG.</span>
+        </div>
 
-      <button type="submit" disabled={isPending} className={styles.button}>
-        {isPending ? "Enviando..." : "Enviar Documento"}
-      </button>
-    </form>
+        <button type="submit" disabled={isPending} className={styles.button}>
+          {isPending ? "Enviando..." : "Enviar Documento"}
+        </button>
+      </form>
+    </div>
   );
 }
