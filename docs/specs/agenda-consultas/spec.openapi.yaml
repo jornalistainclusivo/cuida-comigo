@@ -1,0 +1,104 @@
+openapi: 3.1.0
+info:
+  title: Cuida Comigo - Agenda de Consultas API
+  version: "2.0.0"
+paths:
+  /api/v1/care-groups/{group_id}/appointments:
+    get:
+      summary: Lista agendamentos médicos do paciente associado ao grupo
+      parameters:
+        - in: path
+          name: group_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Sucesso (Agendamentos listados por ordem decrescente)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentResponse'
+        '403':
+          description: Acesso Negado (Usuário não pertence ao grupo)
+        '404':
+          description: Grupo não encontrado
+    post:
+      summary: Cria um novo agendamento
+      parameters:
+        - in: path
+          name: group_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentCreate'
+      responses:
+        '201':
+          description: Agendamento Criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentResponse'
+        '403':
+          description: Acesso Negado (RBAC Failure)
+        '404':
+          description: Grupo não encontrado
+components:
+  schemas:
+    AppointmentCreate:
+      type: object
+      required:
+        - title
+        - scheduled_at
+      properties:
+        title:
+          type: string
+          example: "Consulta Ortopedista"
+        scheduled_at:
+          type: string
+          format: date-time
+          example: "2026-08-15T09:00:00Z"
+        provider_name:
+          type: string
+          example: "Dr. João Silva"
+        location:
+          type: string
+          example: "Hospital Central, Sala 12"
+    AppointmentResponse:
+      type: object
+      required:
+        - id
+        - care_recipient_id
+        - title
+        - scheduled_at
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        care_recipient_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        scheduled_at:
+          type: string
+          format: date-time
+        provider_name:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
