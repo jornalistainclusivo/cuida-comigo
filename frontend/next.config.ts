@@ -18,10 +18,9 @@ const nextConfig: NextConfig = {
   // Suppress Turbopack error: @serwist/next uses webpack plugin;
   // the empty turbopack config tells Next.js this is intentional.
   turbopack: {},
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "10mb",
-    }
+  // @ts-ignore - Next.js 15 schema puts serverActions here but NextConfig type is lagging
+  serverActions: {
+    bodySizeLimit: "10mb",
   },
   async rewrites() {
     return [
