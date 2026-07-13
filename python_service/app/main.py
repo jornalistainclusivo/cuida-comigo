@@ -13,7 +13,12 @@ async def lifespan(app: FastAPI):
     yield
     scheduler.shutdown()
 
-app = FastAPI(title="Orquestração de Cuidado API", version="0.2.0", lifespan=lifespan)
+app = FastAPI(
+    title="Em Círculo API",
+    description="Plataforma dedicada à organização e coordenação da rede de apoio.",
+    version="0.2.0",
+    lifespan=lifespan
+)
 
 app.include_router(care_groups.router)
 app.include_router(care_recipients.router)

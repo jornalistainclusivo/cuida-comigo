@@ -2,16 +2,16 @@
 name: sdd_cuida_comigo
 description: Software Design Document (v2.0 Draft)
 jinc-spec-version: "1.0.0"
-project-name: Cuida Comigo
+project-name: Em Círculo
 status: active
 last-updated: 2026-07-11
 prd-ref: docs/PRD.md
 ---
 
-# Software Design Document (SDD) — Cuida Comigo
+# Software Design Document (SDD) — Em Círculo
 
 ## 1. Visão Arquitetural
-O **Cuida Comigo** segue uma arquitetura baseada em microsserviços lógicos, consistindo de um Frontend Server-Side Rendered acoplado a uma API assíncrona orientada a eventos transacionais.
+O **Em Círculo** segue uma arquitetura baseada em microsserviços lógicos, consistindo de um Frontend Server-Side Rendered acoplado a uma API assíncrona orientada a eventos transacionais.
 
 ### 1.1. C4 Context & Container Diagram
 
@@ -21,7 +21,7 @@ C4Context
 
     Person(user, "Cuidador / Familiar", "Interage via Mobile/Web")
     
-    System_Boundary(c1, "Cuida Comigo Platform") {
+    System_Boundary(c1, "Em Círculo Platform") {
         Container(frontend, "Frontend Web App", "Next.js 16 (App Router)", "Renderiza UI, gerencia estado e faz polling de notificações")
         Container(api, "Backend API Service", "FastAPI (Python)", "Gerencia regras de negócio, auth e endpoints")
         Container(db, "Database", "PostgreSQL", "Armazena dados transacionais (SQLModel/Alembic)")

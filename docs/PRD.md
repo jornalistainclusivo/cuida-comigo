@@ -2,15 +2,15 @@
 name: prd_cuida_comigo
 description: Documento Unificado de Requisitos de Produto (v2.0 Draft)
 jinc-spec-version: "1.0.0"
-project-name: Cuida Comigo
+project-name: Em Círculo
 status: draft
 last-updated: 2026-07-09
 ---
 
-# Documento de Requisitos de Produto (PRD) — Cuida Comigo
+# Documento de Requisitos de Produto (PRD) — Em Círculo
 
 ## 1. Visão Geral (North Star)
-O **Cuida Comigo** é uma plataforma desenhada para descentralizar a carga física e mental do cuidado de pessoas com necessidades especiais, idosos ou pacientes em reabilitação. O aplicativo substitui grupos informais de WhatsApp por uma governança estruturada, garantindo que toda a rede de apoio (familiares, cuidadores contratados e voluntários) esteja sincronizada em tempo real sobre rotinas, medicamentos e tarefas.
+O **Em Círculo** é uma plataforma dedicada à organização e coordenação da rede de apoio, desenhada para descentralizar a carga física e mental do cuidado de pessoas com necessidades especiais, idosos ou pacientes em reabilitação. A plataforma substitui grupos informais de WhatsApp por uma governança estruturada, garantindo que toda a rede de apoio (familiares, cuidadores contratados e voluntários) esteja sincronizada em tempo real sobre rotinas, medicamentos e tarefas.
 
 O aplicativo deve proporcionar paz de espírito, evitando superdosagem de medicamentos por falha de comunicação e garantindo que nenhuma tarefa essencial seja esquecida.
 

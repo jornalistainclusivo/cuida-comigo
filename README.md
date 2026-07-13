@@ -1,6 +1,6 @@
-# Cuida Comigo
+# Em Círculo
 
-> O Cuida Comigo é uma plataforma de gestão compartilhada projetada para descentralizar a carga cognitiva e operacional de cuidadores informais.
+> O Em Círculo é uma plataforma dedicada à organização e coordenação da rede de apoio, projetada para descentralizar a carga cognitiva e operacional de cuidadores informais.
 
 ## Quick Start
 
