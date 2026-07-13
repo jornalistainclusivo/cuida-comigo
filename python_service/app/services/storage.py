@@ -13,7 +13,7 @@ def get_s3_client():
     )
 
 def get_bucket_name() -> str:
-    return os.getenv('S3_BUCKET_NAME', 'cuidacomigo-docs')
+    return os.getenv('S3_BUCKET_NAME', 'emcirculo-docs')
 
 def upload_file(file_obj, object_name: str, content_type: str = None) -> bool:
     """

@@ -35,8 +35,8 @@ services:
       /bin/sh -c "
       sleep 5;
       mc alias set local http://minio:9000 minioadmin minioadmin;
-      mc mb local/cuidacomigo-docs || true;
-      mc anonymous set public local/cuidacomigo-docs || true;
+      mc mb local/emcirculo-docs || true;
+      mc anonymous set public local/emcirculo-docs || true;
       exit 0;
       "
 
