@@ -1,5 +1,7 @@
 ---
 name: spec_home_page
+jinc-spec-version: "1.0.0"
+project-name: Em Círculo
 feature: Home Page Pública (Landing)
 status: approved
 version: 1.1.0

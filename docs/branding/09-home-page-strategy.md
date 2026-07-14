@@ -1,7 +1,7 @@
 ---
 name: "09-home-page-strategy"
 jinc-spec-version: "1.0.0"
-project-name: "Em Círculo"
+project-name: Em Círculo
 title: Estratégia da Home
 version: 1.0.0
 status: Draft
