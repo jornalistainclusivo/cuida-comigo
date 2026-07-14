@@ -1,0 +1,54 @@
+/* FinalCtaSection.module.css
+ * Uses color-primary (teal) as full-bleed background — inverted contrast
+ */
+
+.section {
+  padding: var(--space-16) var(--space-8);
+  background-color: var(--color-primary);
+}
+
+.container {
+  max-width: 44rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.heading {
+  font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-3xl));
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.025em;
+  color: var(--color-surface);
+  margin-bottom: var(--space-4);
+}
+
+.body {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-primary-light);
+  margin-bottom: var(--space-8);
+}
+
+/* Inverted button — white bg on teal surface */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4) var(--space-8);
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  box-shadow: var(--shadow-md);
+  transition: background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.cta:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-lg);
+}

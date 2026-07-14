@@ -1,0 +1,67 @@
+/* HeroSection.module.css
+ * Design tokens: globals.css (teal primary, 8-point grid, Inter, shadow system)
+ */
+
+.hero {
+  background-color: var(--color-surface);
+  padding: var(--space-16) var(--space-8);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.heroContent {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.headline {
+  font-size: clamp(var(--font-size-3xl), 5vw, 3.5rem);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-6);
+}
+
+.highlight {
+  color: var(--color-primary);
+}
+
+.subtext {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  max-width: 46rem;
+  margin-bottom: var(--space-10);
+}
+
+.ctaGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+/* CTA Primary: global .btn .btn--primary provides base, this adds size override */
+.ctaPrimarySize {
+  font-size: var(--font-size-base) !important;
+  padding: var(--space-4) var(--space-8) !important;
+}
+
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-4) var(--space-8);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.ctaSecondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}

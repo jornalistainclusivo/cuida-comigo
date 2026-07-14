@@ -1,0 +1,268 @@
+/* HomeHeader.module.css
+ * Sticky header with backdrop-filter + full WAI-ARIA hamburger support
+ * Tokens: globals.css design system exclusively
+ */
+
+/* ── Header Shell ──────────────────────────────────────────────── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid var(--color-border);
+
+  /* Graceful degradation for backdrop-filter */
+  @supports (backdrop-filter: blur(12px)) {
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+.inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  height: 3.75rem; /* 60px — matches app nav height */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+/* ── Logo ──────────────────────────────────────────────────────── */
+.logo {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family);
+  color: var(--color-primary);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2); /* 8px */
+}
+
+.logo:hover {
+  color: var(--color-primary-hover);
+}
+
+/* ── Desktop Navigation ────────────────────────────────────────── */
+.desktopNav {
+  display: none;
+  flex: 1;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .desktopNav {
+    display: flex;
+  }
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.navLink {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  padding: var(--space-1) 0;
+  border-bottom: 2px solid transparent;
+}
+
+.navLink:hover {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* ── Desktop CTA ───────────────────────────────────────────────── */
+.desktopCta {
+  display: none;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .desktopCta {
+    display: flex;
+  }
+}
+
+/* Outline/secondary button — matches globals.css .btn pattern */
+.btnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-5);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  text-decoration: none;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btnOutline:hover {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+/* ── Hamburger Button ──────────────────────────────────────────── */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: var(--space-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast);
+}
+
+.hamburger:hover {
+  background-color: var(--color-surface-raised);
+}
+
+@media (min-width: 768px) {
+  .hamburger {
+    display: none;
+  }
+}
+
+.bar {
+  display: block;
+  width: 1.25rem;
+  height: 2px;
+  background-color: var(--color-text-primary);
+  border-radius: var(--radius-full);
+  transform-origin: center;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+/* Animated X state */
+.barTopOpen {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.barMidOpen {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.barBotOpen {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ── Mobile Menu Dropdown ──────────────────────────────────────── */
+.mobileMenu {
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  animation: slideDown 0.15s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobileMenu {
+    animation: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobileMenu {
+    display: none;
+  }
+}
+
+.mobileNavList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mobileNavLink {
+  display: block;
+  padding: var(--space-4) 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-border);
+  transition: color var(--transition-fast);
+}
+
+.mobileNavLink:hover {
+  color: var(--color-primary);
+}
+
+.mobileCta {
+  padding-top: var(--space-5);
+}
+
+.mobileCtaLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  text-decoration: none;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.mobileCtaLink:hover {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+/* ── Dark Mode ─────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  .header {
+    background-color: rgba(26, 26, 46, 0.9);
+
+    @supports (backdrop-filter: blur(12px)) {
+      background-color: rgba(26, 26, 46, 0.75);
+    }
+  }
+
+  .mobileMenu {
+    background-color: var(--color-surface);
+  }
+}
