@@ -10,17 +10,17 @@ last-updated: 2026-07-09
 # Documento de Requisitos de Produto (PRD) — Em Círculo
 
 ## 1. Visão Geral (North Star)
-O **Em Círculo** é uma plataforma dedicada à organização e coordenação da rede de apoio, desenhada para descentralizar a carga física e mental do cuidado de pessoas com necessidades especiais, idosos ou pacientes em reabilitação. A plataforma substitui grupos informais de WhatsApp por uma governança estruturada, garantindo que toda a rede de apoio (familiares, cuidadores contratados e voluntários) esteja sincronizada em tempo real sobre rotinas, medicamentos e tarefas.
+O **Em Círculo** constrói a rede de apoio mais confiável para quem cuida. Acreditamos que o cuidado nunca foi uma responsabilidade individual, mas sim coletiva. Nossa visão é um futuro onde nenhuma família precise depender exclusivamente da memória ou de grupos de mensagens fragmentados. 
 
-O aplicativo deve proporcionar paz de espírito, evitando superdosagem de medicamentos por falha de comunicação e garantindo que nenhuma tarefa essencial seja esquecida.
+Não somos um aplicativo de tarefas. Somos um ambiente de confiança, oferecendo ferramentas que ajudam as pessoas a cuidarem juntas. A plataforma conecta familiares, voluntários e profissionais, compartilhando responsabilidades e garantindo que todos saibam o que precisa ser feito — reduzindo a sobrecarga do cuidador principal e trazendo tranquilidade para toda a rede de apoio.
 
 ---
 
 ## 2. Personas Alvo
 
-1. **O Cuidador Primário (Administrador):** Centraliza a responsabilidade, gerencia a burocracia do cuidado e precisa distribuir tarefas para não entrar em *burnout*.
-2. **O Familiar / Voluntário (Apoio):** Deseja ajudar, mas não sabe exatamente o que precisa ser feito ou se o medicamento já foi dado.
-3. **O Cuidador Contratado (Profissional):** Precisa de um *log* estruturado para justificar seu turno de trabalho.
+1. **O Cuidador Principal:** Continua no centro das decisões, mas não precisa carregar todas as responsabilidades sozinho.
+2. **Familiares e Pessoas de Apoio:** Desejam contribuir de forma organizada, mesmo participando ocasionalmente, ajudando a família a cuidar junta.
+3. **Cuidadores Profissionais:** Trabalham em conjunto com a família, utilizando informações organizadas, atualizadas e seguras.
 
 ---
 
@@ -60,20 +60,19 @@ O aplicativo deve proporcionar paz de espírito, evitando superdosagem de medica
 
 ## 4. Escopo Funcional (Futuro / v2.1+)
 
-### 4.1. Coordenação Avançada e Supervisão
-- **Arquivo de Documentos Clínicos:** Repositório seguro na nuvem para armazenar receitas médicas, laudos, exames e imagens.
-- **Relatório Semanal para a Família:** Geração de resumos automáticos (PDF/App) detalhando a evolução do paciente e a execução de tarefas para manter a rede de apoio informada.
-- **Telemedicina Simplificada:** Atalho para agendamento de consultas ou chamadas de vídeo rápidas com profissionais da saúde.
+O roadmap futuro reflete nosso compromisso: ajudar as pessoas a cuidarem juntas.
 
-### 4.2. Centralização do Histórico de Saúde
-- **Diário de Evolução com Tags de Sintomas:** Permite o registro rápido e estruturado de alterações no quadro do paciente.
-- **Controle de Mobilidade, Higiene e Tratamentos:** Trilhas de tarefas especializadas contínuas (ex: fisioterapia, fonoaudiologia).
-- **Acompanhamento Nutricional e Saúde Mental:** Módulos para registrar a ingestão alimentar, hidratação, oscilações de humor e bem-estar geral.
+### 4.1. Colaboração e Delegação no Círculo
+- **Delegação de Tarefas e Responsabilidades Compartilhadas:** Ferramentas para redistribuir facilmente a carga, permitindo que membros do Círculo assumam tarefas de forma autônoma e organizada.
+- **Permissões Compartilhadas e Governança:** Níveis de acesso flexíveis para garantir que a família, os profissionais e os voluntários acessem apenas as informações pertinentes ao seu papel na rede de apoio.
 
-### 4.3. Gestão Financeira e Transparência
-- **Registro de Gastos:** Lançamento de despesas médicas, farmácia, honorários de cuidadores e alimentação.
-- **Divisão de Custos e Controle de Pagamentos:** Ferramenta para rateio automático das despesas de cuidado entre os familiares responsáveis.
-- **Prestação de Contas Automática:** Geração de balanços financeiros mensais claros para evitar conflitos sobre os custos do cuidado.
+### 4.2. Comunicação e Confiança
+- **Murais de Comunicação do Círculo:** Um espaço unificado para troca de informações, atualizações diárias e recados, substituindo a fragmentação dos grupos de mensagens e fortalecendo a confiança.
+- **Diário de Evolução Compartilhado:** Registro rápido do humor, da alimentação e do bem-estar do paciente, permitindo que toda a rede saiba como o cuidado está progredindo, reduzindo a ansiedade de quem não está presente.
+
+### 4.3. Coordenação Avançada da Rede
+- **Arquivo de Documentos Clínicos e Receitas:** Repositório seguro para que qualquer cuidador de plantão ou familiar tenha acesso imediato aos laudos e prescrições.
+- **Transparência e Gestão Financeira Solidária:** Funcionalidades para o registro de gastos (fármacos, honorários) e rateio automático entre os familiares, evitando conflitos e gerando paz de espírito.
 
 ---
 

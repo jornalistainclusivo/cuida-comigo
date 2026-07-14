@@ -1,6 +1,7 @@
 # Em Círculo
 
-> O Em Círculo é uma plataforma dedicada à organização e coordenação da rede de apoio, projetada para descentralizar a carga cognitiva e operacional de cuidadores informais.
+> **Ninguém deve cuidar sozinho.**  
+> O Em Círculo não é um simples aplicativo de tarefas. É a rede de apoio para quem cuida. Uma plataforma projetada para conectar familiares, cuidadores, voluntários e profissionais, oferecendo ferramentas que ajudam as pessoas a cuidarem juntas. Nosso propósito é reduzir a carga mental, compartilhar responsabilidades e transformar informações dispersas em colaboração e tranquilidade.
 
 ## Quick Start
 
