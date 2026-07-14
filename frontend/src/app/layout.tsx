@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 import { SkipLink } from "@/components/SkipLink";
-import { Navigation } from "@/components/Navigation";
+import { AppHeader } from "@/components/layout/AppHeader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -41,7 +41,7 @@ export default async function RootLayout({
       <body>
         <SkipLink />
 
-        <Navigation isLoggedIn={isLoggedIn} />
+        <AppHeader isLoggedIn={isLoggedIn} />
 
         <main id="main-content" tabIndex={-1}>
           {children}

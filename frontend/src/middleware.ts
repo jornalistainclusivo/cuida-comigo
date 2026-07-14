@@ -5,42 +5,42 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("cc_access_token")?.value;
   const { pathname } = request.nextUrl;
 
-  // Protected routes
-  const isProtectedRoute = pathname === "/" || pathname.startsWith("/medicamentos") || pathname === "/onboarding";
+  // Protected routes — require authentication
+  const isProtectedRoute =
+    pathname === "/dashboard" ||
+    pathname.startsWith("/medicamentos") ||
+    pathname.startsWith("/agenda") ||
+    pathname.startsWith("/arquivo") ||
+    pathname.startsWith("/perfil") ||
+    pathname.startsWith("/notificacoes") ||
+    pathname === "/onboarding";
 
-  // Auth routes
+  // Auth routes — redirect to dashboard if already logged in
   const isAuthRoute = pathname === "/login";
 
   if (isProtectedRoute && !token) {
-    // Redirect to login page if no token
     const loginUrl = new URL("/login", request.url);
-    // Optional: save destination to redirect back after login
-    // loginUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   if (isAuthRoute && token) {
-    // Redirect to home if already logged in
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();
 }
 
+
 // Config to specify matching paths
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - logo.png, icons/ (public assets)
-     */
-    "/",
+    "/dashboard",
     "/medicamentos/:path*",
-    "/login",
+    "/agenda/:path*",
+    "/arquivo/:path*",
+    "/perfil/:path*",
+    "/notificacoes/:path*",
     "/onboarding",
+    "/login",
   ],
 };
